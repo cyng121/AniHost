@@ -1,0 +1,4795 @@
+/* ═══════════════════════════════════════════════════════════════
+   AniGhost — YouTube-Style UI Design System
+   ═══════════════════════════════════════════════════════════════ */
+
+:root {
+  --yt-bg: #0f0f0f;
+  --yt-surface: #181818;
+  --yt-surface-hover: #272727;
+  --yt-chip-bg: rgba(255, 255, 255, 0.08);
+  --yt-chip-hover: rgba(255, 255, 255, 0.16);
+  --yt-chip-active-bg: #ffffff;
+  --yt-chip-active-text: #0f0f0f;
+  --yt-text-primary: #f1f1f1;
+  --yt-text-secondary: #aaaaaa;
+  --yt-border: rgba(255, 255, 255, 0.1);
+  --yt-border-subtle: rgba(255, 255, 255, 0.06);
+  --yt-red: #ff0033;
+  --yt-blue: #3ea6ff;
+  --yt-sidebar-width: 240px;
+  --yt-sidebar-mini-width: 72px;
+  --yt-header-height: 56px;
+  --yt-font: -apple-system, BlinkMacSystemFont, "Roboto", "Segoe UI", "Zen Kaku Gothic New", sans-serif;
+}
+
+[data-theme="light"] {
+  --yt-bg: #ffffff;
+  --yt-surface: #f2f2f2;
+  --yt-surface-hover: #e5e5e5;
+  --yt-chip-bg: rgba(0, 0, 0, 0.05);
+  --yt-chip-hover: rgba(0, 0, 0, 0.1);
+  --yt-chip-active-bg: #0f0f0f;
+  --yt-chip-active-text: #ffffff;
+  --yt-text-primary: #0f0f0f;
+  --yt-text-secondary: #606060;
+  --yt-border: rgba(0, 0, 0, 0.1);
+  --yt-border-subtle: rgba(0, 0, 0, 0.06);
+}
+
+/* ── Base Shell Layout ── */
+.yt-shell {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: var(--yt-bg);
+  color: var(--yt-text-primary);
+  font-family: var(--yt-font);
+  overflow-x: hidden;
+  max-width: 100vw;
+}
+
+.yt-body {
+  display: flex;
+  flex: 1;
+  margin-top: var(--yt-header-height);
+}
+
+.yt-main {
+  flex: 1;
+  min-width: 0;
+  transition: margin-left 0.2s cubic-bezier(0.05, 0, 0, 1);
+}
+
+.yt-main--with-sidebar {
+  margin-left: var(--yt-sidebar-width);
+}
+
+.yt-main--with-mini-sidebar {
+  margin-left: var(--yt-sidebar-mini-width);
+}
+
+/* ── YouTube Header ── */
+.yt-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--yt-header-height);
+  background-color: var(--yt-bg);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  z-index: 200;
+  border-bottom: 1px solid var(--yt-border-subtle);
+}
+
+.yt-header__left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.yt-icon-btn {
+  background: none;
+  border: none;
+  color: var(--yt-text-primary);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.15s;
+}
+
+.yt-icon-btn:hover {
+  background-color: var(--yt-chip-bg);
+}
+
+.yt-brand {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  text-decoration: none;
+  color: var(--yt-text-primary);
+  user-select: none;
+}
+
+.yt-brand__logo {
+  display: flex;
+  align-items: center;
+}
+
+.yt-brand__name {
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  display: flex;
+  align-items: flex-start;
+  gap: 3px;
+}
+
+.yt-brand__badge {
+  font-size: 10px;
+  color: var(--yt-text-secondary);
+  font-weight: 500;
+  margin-top: -2px;
+}
+
+/* Header Center: Search */
+.yt-header__center {
+  flex: 0 1 732px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0 24px;
+}
+
+.yt-search-form {
+  display: flex;
+  flex: 1;
+  height: 40px;
+  align-items: center;
+}
+
+.yt-search-box {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  background-color: #121212;
+  border: 1px solid #303030;
+  border-radius: 40px 0 0 40px;
+  padding: 0 16px;
+  height: 100%;
+  position: relative;
+  transition: border-color 0.2s;
+}
+
+[data-theme="light"] .yt-search-box {
+  background-color: #fff;
+  border-color: #ccc;
+}
+
+.yt-search-box:focus-within {
+  border-color: var(--yt-blue);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.yt-search-input {
+  width: 100%;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--yt-text-primary);
+  font-size: 15px;
+  font-family: inherit;
+}
+
+.yt-search-input::placeholder {
+  color: var(--yt-text-secondary);
+}
+
+.yt-search-btn {
+  width: 64px;
+  height: 100%;
+  background-color: #222222;
+  border: 1px solid #303030;
+  border-left: none;
+  border-radius: 0 40px 40px 0;
+  color: var(--yt-text-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.15s;
+}
+
+[data-theme="light"] .yt-search-btn {
+  background-color: #f8f8f8;
+  border-color: #ccc;
+}
+
+.yt-search-btn:hover {
+  background-color: #272727;
+}
+
+.yt-mic-btn {
+  width: 40px;
+  height: 40px;
+  background-color: #222222;
+  border: none;
+  border-radius: 50%;
+  color: var(--yt-text-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background-color 0.15s;
+}
+
+.yt-mic-btn:hover {
+  background-color: #2a2a2a;
+}
+
+.yt-mic-btn.is-active {
+  background-color: var(--yt-red);
+  color: #fff;
+  animation: pulse 1.5s infinite;
+}
+
+/* Header Right */
+.yt-header__right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.yt-avatar-badge {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #1e88e5, #1565c0);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+/* ── YouTube Mobile Search Bar ── */
+.yt-mobile-search-btn {
+  display: none;
+}
+
+.yt-mobile-search-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  height: 100%;
+}
+
+.yt-mobile-search-back-btn {
+  flex-shrink: 0;
+}
+
+.yt-mobile-search-form {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  height: 38px;
+  background-color: #121212;
+  border: 1px solid #303030;
+  border-radius: 24px;
+  padding: 0 14px;
+  position: relative;
+}
+
+[data-theme="light"] .yt-mobile-search-form {
+  background-color: #f2f2f2;
+  border-color: #ccc;
+}
+
+.yt-mobile-search-input {
+  width: 100%;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--yt-text-primary);
+  font-size: 15px;
+  font-family: inherit;
+}
+
+.yt-mobile-search-clear {
+  background: none;
+  border: none;
+  color: var(--yt-text-secondary);
+  font-size: 14px;
+  cursor: pointer;
+  padding: 4px;
+  line-height: 1;
+}
+
+.yt-mobile-mic-btn {
+  flex-shrink: 0;
+  width: 38px;
+  height: 38px;
+}
+
+@media (max-width: 900px) {
+  .yt-header {
+    padding: 0 10px;
+    height: 48px;
+    max-width: 100vw;
+    box-sizing: border-box;
+    overflow-x: hidden;
+  }
+
+  :root {
+    --yt-header-height: 48px;
+  }
+
+  .yt-header__guide-btn {
+    display: none;
+  }
+
+  .yt-header__center {
+    display: none !important;
+  }
+
+  .yt-desktop-only-btn {
+    display: none !important;
+  }
+
+  .yt-mobile-search-btn {
+    display: flex !important;
+  }
+
+  .yt-brand__name {
+    font-size: 16px;
+  }
+
+  .yt-brand__logo {
+    width: 22px !important;
+    height: 22px !important;
+  }
+
+  .yt-icon-btn {
+    width: 36px;
+    height: 36px;
+  }
+}
+
+
+/* ── YouTube Sidebar ── */
+.yt-sidebar {
+  position: fixed;
+  top: var(--yt-header-height);
+  left: 0;
+  bottom: 0;
+  width: var(--yt-sidebar-width);
+  background-color: var(--yt-bg);
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 12px 12px 24px;
+  z-index: 150;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+}
+
+.yt-sidebar::-webkit-scrollbar {
+  width: 8px;
+}
+
+.yt-sidebar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+}
+
+.yt-sidebar-section {
+  padding-bottom: 12px;
+  margin-bottom: 12px;
+  border-bottom: 1px solid var(--yt-border-subtle);
+}
+
+.yt-sidebar-section:last-child {
+  border-bottom: none;
+}
+
+.yt-sidebar-heading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px 6px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--yt-text-primary);
+  text-transform: capitalize;
+}
+
+.yt-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  height: 40px;
+  padding: 0 12px;
+  border-radius: 10px;
+  color: var(--yt-text-primary);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 400;
+  transition: background-color 0.15s;
+}
+
+.yt-nav-item:hover {
+  background-color: var(--yt-chip-bg);
+}
+
+.yt-nav-item.is-active {
+  background-color: rgba(255, 255, 255, 0.1);
+  font-weight: 600;
+}
+
+[data-theme="light"] .yt-nav-item.is-active {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.yt-nav-item__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+.yt-nav-item__label {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Mini Sidebar (collapsed) */
+.yt-sidebar--mini {
+  width: var(--yt-sidebar-mini-width);
+  padding: 6px 4px;
+}
+
+.yt-sidebar--mini .yt-sidebar-section {
+  border-bottom: none;
+  padding-bottom: 0;
+  margin-bottom: 0;
+}
+
+.yt-sidebar--mini .yt-sidebar-heading {
+  display: none;
+}
+
+.yt-sidebar--mini .yt-nav-item {
+  flex-direction: column;
+  gap: 6px;
+  height: 74px;
+  padding: 14px 0 10px;
+  border-radius: 10px;
+  justify-content: center;
+}
+
+.yt-sidebar--mini .yt-nav-item__label {
+  font-size: 10px;
+}
+
+/* ── Filter Pills Bar ── */
+.yt-filter-bar {
+  position: sticky;
+  top: var(--yt-header-height);
+  background-color: var(--yt-bg);
+  padding: 12px 24px;
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  white-space: nowrap;
+  z-index: 100;
+  scrollbar-width: none;
+}
+
+.yt-filter-bar::-webkit-scrollbar {
+  display: none;
+}
+
+.yt-pill {
+  padding: 6px 14px;
+  border-radius: 8px;
+  background-color: var(--yt-chip-bg);
+  color: var(--yt-text-primary);
+  font-size: 14px;
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.15s, color 0.15s;
+  flex-shrink: 0;
+  text-decoration: none;
+}
+
+.yt-pill:hover {
+  background-color: var(--yt-chip-hover);
+}
+
+.yt-pill.is-active {
+  background-color: var(--yt-chip-active-bg);
+  color: var(--yt-chip-active-text);
+  font-weight: 600;
+}
+
+/* ── Video Card Grid (16:9) ── */
+.yt-grid-container {
+  padding: 16px 24px 48px;
+}
+
+.yt-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: 20px 14px;
+}
+
+@media (min-width: 768px) {
+  .yt-grid {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  }
+}
+
+@media (min-width: 1100px) {
+  .yt-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (min-width: 1450px) {
+  .yt-grid {
+    grid-template-columns: repeat(5, 1fr);
+  }
+}
+
+@media (min-width: 1800px) {
+  .yt-grid {
+    grid-template-columns: repeat(6, 1fr);
+  }
+}
+
+/* ── Compact Episode Grid on Info / Channel Page ── */
+.yt-grid--episodes {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 18px 12px;
+}
+
+@media (min-width: 1100px) {
+  .yt-grid--episodes {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (min-width: 1450px) {
+  .yt-grid--episodes {
+    grid-template-columns: repeat(5, 1fr);
+  }
+}
+
+@media (min-width: 1800px) {
+  .yt-grid--episodes {
+    grid-template-columns: repeat(6, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .yt-grid--episodes {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px 8px;
+  }
+}
+
+.yt-card--episode {
+  display: flex;
+  flex-direction: column;
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+  background-color: transparent;
+  border: none;
+  border-radius: 10px;
+  padding: 0;
+  box-sizing: border-box;
+  transition: transform 0.15s ease;
+}
+
+.yt-card--episode:hover {
+  transform: translateY(-2px);
+}
+
+.yt-card--episode .yt-card__thumb-box {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: 10px;
+  overflow: hidden;
+  background-color: #1e1e1e;
+  border: none;
+}
+
+.yt-card--episode .yt-card__thumb {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.25s cubic-bezier(0.2, 0, 0, 1);
+}
+
+.yt-card--episode:hover .yt-card__thumb {
+  transform: scale(1.03);
+}
+
+.yt-card--episode .yt-card__meta-row {
+  display: flex;
+  gap: 0;
+  margin-top: 8px;
+  padding: 2px 0;
+  align-items: flex-start;
+}
+
+.yt-card--episode .yt-card__info {
+  flex: 1;
+  min-width: 0;
+}
+
+.yt-card--episode .yt-card__title {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.35;
+  color: #fff;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  margin: 0 0 3px;
+}
+
+.yt-card--episode .yt-card__stats {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", sans-serif;
+  font-size: 11px;
+  color: #888;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.yt-card--episode .yt-card__badge {
+  position: absolute;
+  bottom: 6px;
+  right: 6px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 6px;
+  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background-color: rgba(0, 0, 0, 0.85);
+  color: #fff;
+}
+
+.yt-card {
+  display: flex;
+  flex-direction: column;
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+}
+
+.yt-card__thumb-box {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: 9px;
+  overflow: hidden;
+  background-color: #202020;
+}
+
+.yt-card__thumb {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.25s cubic-bezier(0.2, 0, 0, 1);
+}
+
+.yt-card:hover .yt-card__thumb {
+  transform: scale(1.03);
+}
+
+.yt-card__badge {
+  position: absolute;
+  bottom: 6px;
+  right: 6px;
+  z-index: 3;
+  background-color: rgba(0, 0, 0, 0.82);
+  color: #ffffff;
+  padding: 2px 5px;
+  font-size: 11px;
+  font-weight: 600;
+  border-radius: 3px;
+  letter-spacing: 0.02em;
+}
+
+.yt-card__meta-row {
+  display: flex;
+  gap: 10px;
+  margin-top: 8px;
+  align-items: flex-start;
+}
+
+.yt-card__avatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+  background-color: #333;
+}
+
+.yt-card__info {
+  flex: 1;
+  min-width: 0;
+}
+
+.yt-card__title {
+  font-size: 13.5px;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--yt-text-primary);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  margin: 0 0 3px;
+}
+
+.yt-card__channel {
+  font-size: 12px;
+  color: var(--yt-text-secondary);
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.yt-card__channel:hover {
+  color: var(--yt-text-primary);
+}
+
+.yt-card__stats {
+  font-size: 11.5px;
+  color: var(--yt-text-secondary);
+  margin-top: 2px;
+}
+
+/* ── Section Title & Home Sections ── */
+.yt-home-section {
+  margin-bottom: 40px;
+}
+
+.yt-section-title {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  margin: 0 0 16px 0;
+  color: var(--yt-text-primary, #f1f1f1);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* ── YouTube Shorts Section (Snap Scroll Feed) ── */
+.yt-shorts-container {
+  height: calc(100vh - var(--yt-header-height, 56px));
+  height: calc(100dvh - var(--yt-header-height, 56px));
+  overflow-y: scroll;
+  scroll-snap-type: y mandatory;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  background-color: var(--yt-bg);
+}
+
+.yt-shorts-container::-webkit-scrollbar {
+  display: none;
+}
+
+.yt-short-item {
+  height: calc(100vh - var(--yt-header-height, 56px));
+  height: calc(100dvh - var(--yt-header-height, 56px));
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 16px 24px;
+  box-sizing: border-box;
+}
+
+.yt-short-poster-wrap {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.yt-short-poster {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.yt-short-poster-play {
+  position: absolute;
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  background-color: rgba(255, 0, 51, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 20px rgba(255, 0, 51, 0.45);
+}
+
+.yt-short-wrapper {
+  display: flex;
+  align-items: flex-end;
+  gap: 16px;
+  max-width: 500px;
+}
+
+
+.yt-short-card {
+  position: relative;
+  width: min(390px, 80vw);
+  height: min(690px, 82vh);
+  aspect-ratio: 9 / 16;
+  border-radius: 16px;
+  overflow: hidden;
+  background-color: #000;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+}
+
+.yt-short-video {
+  position: absolute;
+  top: -55px;
+  left: 0;
+  width: 100%;
+  height: calc(100% + 125px);
+  border: none;
+  pointer-events: none;
+}
+
+.yt-short-mute-btn {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 15;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.65);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+  transition: background 0.15s ease, transform 0.15s ease;
+}
+
+.yt-short-mute-btn:hover {
+  background: rgba(0, 0, 0, 0.85);
+  transform: scale(1.08);
+}
+
+.yt-short-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.4) 30%, transparent 60%);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 20px 16px;
+}
+
+.yt-short-channel {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+  pointer-events: auto;
+}
+
+.yt-short-channel__avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.yt-short-channel__name {
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.yt-short-sub-btn {
+  background-color: #fff;
+  color: #000;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 18px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+
+.yt-short-sub-btn:hover {
+  opacity: 0.9;
+}
+
+.yt-short-title {
+  color: #fff;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.35;
+  margin: 0 0 8px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  pointer-events: auto;
+}
+
+.yt-short-tags {
+  display: flex;
+  gap: 8px;
+  font-size: 12px;
+  color: #3ea6ff;
+  font-weight: 500;
+  pointer-events: auto;
+}
+
+/* Shorts Right Action Bar */
+.yt-short-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding-bottom: 16px;
+}
+
+.yt-short-action-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.yt-short-action-btn {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.12);
+  border: none;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+  transition: background-color 0.15s, transform 0.15s;
+}
+
+.yt-short-action-btn:hover {
+  background-color: rgba(255, 255, 255, 0.22);
+  transform: scale(1.08);
+}
+
+.yt-short-action-label {
+  font-size: 12px;
+  color: #fff;
+  font-weight: 500;
+}
+
+.yt-short-sound-disc {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 4px solid #333;
+  overflow: hidden;
+  animation: spinDisc 6s linear infinite;
+  margin-top: 8px;
+}
+
+.yt-short-sound-disc img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+@keyframes spinDisc {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Dedicated Desktop Up/Down Navigation beside Action Bar */
+.yt-shorts-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-self: center;
+  margin-left: 12px;
+}
+
+.yt-shorts-nav-btn {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  backdrop-filter: blur(12px);
+  transition: all 0.15s ease;
+}
+
+.yt-shorts-nav-btn:hover {
+  background-color: rgba(255, 255, 255, 0.24);
+  transform: scale(1.08);
+}
+
+.yt-short-play-indicator {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.65);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 25;
+  pointer-events: none;
+  animation: playRipple 0.65s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes playRipple {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.6);
+  }
+  30% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1.1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+.yt-short-card.is-sliding {
+  animation: shortCardSlide 0.25s cubic-bezier(0.2, 0.9, 0.3, 1);
+}
+
+@keyframes shortCardSlide {
+  0% {
+    opacity: 0.7;
+    transform: translateY(16px) scale(0.98);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (max-width: 768px) {
+  .yt-shorts-container {
+    padding: 0;
+    height: calc(100vh - var(--yt-header-height, 48px) - 48px - env(safe-area-inset-bottom, 0px));
+    height: calc(100dvh - var(--yt-header-height, 48px) - 48px - env(safe-area-inset-bottom, 0px));
+    min-height: unset;
+    overflow-y: scroll;
+    scroll-snap-type: y mandatory;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .yt-short-item {
+    height: calc(100vh - var(--yt-header-height, 48px) - 48px - env(safe-area-inset-bottom, 0px));
+    height: calc(100dvh - var(--yt-header-height, 48px) - 48px - env(safe-area-inset-bottom, 0px));
+    padding: 0;
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+  }
+
+  .yt-short-wrapper {
+    width: 100%;
+    height: 100%;
+    max-width: 100vw;
+    position: relative;
+    gap: 0;
+  }
+
+  .yt-short-card {
+    width: 100%;
+    height: 100%;
+    max-width: 100vw;
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  .yt-short-video {
+    top: 50%;
+    left: 50%;
+    width: 100%;
+    height: 100%;
+    transform: translate(-50%, -50%) scale(1.75);
+  }
+
+  .yt-short-actions {
+    position: absolute;
+    right: 12px;
+    bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+    z-index: 30;
+    gap: 12px;
+    padding-bottom: 0;
+  }
+
+  .yt-short-action-btn {
+    width: 42px;
+    height: 42px;
+    background-color: rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+  }
+
+  .yt-shorts-nav {
+    display: none !important;
+  }
+}
+
+
+/* ── YouTube Channel Page (Anime Detail) ── */
+.yt-channel {
+  background-color: var(--yt-bg, #0f0f0f);
+  color: var(--yt-text-primary, #fff);
+  min-height: 100vh;
+}
+
+.yt-channel-banner {
+  width: 100%;
+  height: clamp(160px, 22vw, 320px);
+  background-color: #111;
+  overflow: hidden;
+  position: relative;
+}
+
+.yt-channel-banner img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 30%;
+  display: block;
+}
+
+.yt-banner-switch {
+  position: absolute;
+  bottom: 12px;
+  right: 16px;
+  display: flex;
+  gap: 6px;
+  background-color: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  padding: 4px;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  z-index: 2;
+}
+
+.yt-banner-switch-chip {
+  background: transparent;
+  border: none;
+  color: #bbb;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.yt-banner-switch-chip:hover {
+  color: #fff;
+}
+
+.yt-banner-switch-chip.is-active {
+  background-color: #fff;
+  color: #000;
+}
+
+.yt-channel-logo-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-bottom: 6px;
+}
+
+.yt-channel-clearlogo {
+  max-height: clamp(52px, 8vw, 95px);
+  max-width: min(100%, 360px);
+  object-fit: contain;
+  filter: drop-shadow(0 4px 16px rgba(0, 0, 0, 0.8));
+  display: block;
+  margin-bottom: 6px;
+}
+
+.yt-channel-title--with-logo {
+  font-size: clamp(16px, 2.2vw, 22px);
+  font-weight: 600;
+  color: var(--yt-text-secondary, #aaa);
+  margin: 0 0 6px;
+}
+
+/* ── Artworks Grid in About Tab ── */
+.yt-artworks-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+.yt-artwork-card {
+  display: flex;
+  flex-direction: column;
+  background-color: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.yt-artwork-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+}
+
+.yt-artwork-thumb-box {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  position: relative;
+  background-color: #1a1a1a;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.yt-artwork-thumb {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transition: transform 0.3s ease;
+}
+
+.yt-artwork-card:hover .yt-artwork-thumb {
+  transform: scale(1.04);
+}
+
+.yt-artwork-badge {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  background-color: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 3px 8px;
+  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.yt-artwork-meta {
+  padding: 10px 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+.yt-artwork-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--yt-text-primary, #fff);
+}
+
+.yt-artwork-action {
+  font-size: 11px;
+  color: var(--yt-blue, #3ea6ff);
+  font-weight: 500;
+}
+
+/* ── Characters & Voice Actors Section (Split Dual Cards) ── */
+.yt-characters-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  padding: 0 2px;
+}
+
+.yt-characters-title {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #e5e5e5;
+  margin: 0;
+  padding: 0;
+}
+
+.yt-characters-viewall-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background-color: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  color: #ccc;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 5px 14px;
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+
+.yt-characters-viewall-btn:hover {
+  background-color: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.3);
+  color: #fff;
+}
+
+.yt-characters-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+@media (max-width: 1200px) {
+  .yt-characters-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 680px) {
+  .yt-characters-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.yt-char-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #0b0b0b;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 8px 12px;
+  min-height: 58px;
+  box-sizing: border-box;
+  transition: border-color 0.2s ease, background-color 0.2s ease, transform 0.15s ease;
+}
+
+.yt-char-card:hover {
+  border-color: rgba(255, 255, 255, 0.22);
+  background-color: rgba(255, 255, 255, 0.04);
+  transform: translateY(-1px);
+}
+
+.yt-char-side {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  min-width: 0;
+}
+
+.yt-char-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+  background-color: #1e1e1e;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.yt-char-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.yt-char-name {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.3;
+}
+
+.yt-char-role {
+  font-size: 11px;
+  color: #888;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-top: 2px;
+  line-height: 1.2;
+}
+
+.yt-char-divider {
+  width: 1px;
+  height: 28px;
+  background-color: rgba(255, 255, 255, 0.08);
+  margin: 0 10px;
+  flex-shrink: 0;
+}
+
+.yt-va-side {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  flex: 1;
+  min-width: 0;
+}
+
+.yt-va-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  min-width: 0;
+  overflow: hidden;
+  text-align: right;
+}
+
+.yt-va-name {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  color: #ddd;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.3;
+}
+
+.yt-va-lang {
+  font-size: 11px;
+  color: #777;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-top: 2px;
+  line-height: 1.2;
+}
+
+.yt-va-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+  background-color: #1e1e1e;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.yt-va-avatar--placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #888;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.yt-va-empty {
+  flex: 1;
+}
+
+.yt-channel-header {
+  padding: 24px 32px 12px;
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+}
+
+.yt-channel-avatar {
+  width: clamp(80px, 12vw, 136px);
+  height: clamp(80px, 12vw, 136px);
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid var(--yt-bg);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+  flex-shrink: 0;
+  background-color: #222;
+}
+
+.yt-channel-details {
+  flex: 1;
+  min-width: 0;
+}
+
+.yt-channel-title {
+  font-size: clamp(22px, 3vw, 32px);
+  font-weight: 700;
+  margin: 0 0 6px;
+  letter-spacing: -0.02em;
+}
+
+.yt-channel-meta {
+  font-size: 14px;
+  color: var(--yt-text-secondary);
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+
+.yt-channel-desc {
+  font-size: 14px;
+  color: var(--yt-text-secondary);
+  line-height: 1.45;
+  max-width: 800px;
+  margin: 0 0 16px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.yt-channel-actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.yt-action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  height: 36px;
+  padding: 0 16px;
+  border-radius: 9999px;
+  background-color: #0b0b0b;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #e5e5e5;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", sans-serif;
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  cursor: pointer;
+  box-sizing: border-box;
+  text-decoration: none;
+  transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
+}
+
+.yt-action-btn:hover {
+  background-color: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.3);
+  color: #fff;
+  transform: translateY(-1px);
+}
+
+/* Subscribe button variant */
+.yt-action-btn.yt-btn-subscribe {
+  background-color: #ffffff;
+  color: #000000;
+  border-color: #ffffff;
+  font-weight: 700;
+}
+
+.yt-action-btn.yt-btn-subscribe:hover {
+  background-color: #e5e5e5;
+  border-color: #e5e5e5;
+  color: #000000;
+}
+
+.yt-action-btn.yt-btn-subscribe.is-subscribed {
+  background-color: #0b0b0b;
+  color: #ccc;
+  border-color: rgba(255, 255, 255, 0.16);
+  font-weight: 600;
+}
+
+.yt-action-btn.yt-btn-subscribe.is-subscribed:hover {
+  border-color: rgba(255, 255, 255, 0.35);
+  color: #fff;
+}
+
+/* Trailer button icon accent */
+.yt-action-btn.yt-btn-trailer svg {
+  color: var(--yt-red, #ff0033);
+}
+
+/* Watch Later SaveButton */
+.yt-action-btn.yt-btn-save {
+  background-color: #0b0b0b;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.yt-action-btn.yt-btn-save.btn--saved,
+.yt-action-btn.yt-btn-save.is-saved {
+  background-color: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.3);
+  color: #fff;
+}
+
+/* Channel Underline Tabs */
+.yt-channel-tabs {
+  display: flex;
+  padding: 0 32px;
+  border-bottom: 1px solid var(--yt-border);
+  margin-top: 12px;
+}
+
+.yt-channel-tab {
+  background: none;
+  border: none;
+  color: #888;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 14px 20px;
+  cursor: pointer;
+  position: relative;
+  transition: color 0.15s ease;
+}
+
+.yt-channel-tab:hover {
+  color: #e5e5e5;
+}
+
+.yt-channel-tab.is-active {
+  color: #fff;
+  font-weight: 700;
+}
+
+.yt-channel-tab.is-active::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background-color: #fff;
+}
+
+/* Characters Horizontal Circular Portraits */
+.yt-characters-row {
+  display: flex;
+  gap: 20px;
+  overflow-x: auto;
+  padding: 16px 32px 24px;
+  scrollbar-width: thin;
+}
+
+.yt-character-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  width: 96px;
+  flex-shrink: 0;
+  text-align: center;
+}
+
+.yt-character-img {
+  width: 84px;
+  height: 84px;
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+.yt-character-name {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--yt-text-primary);
+  line-height: 1.25;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.yt-character-role {
+  font-size: 11px;
+  color: var(--yt-text-secondary);
+}
+
+/* Responsive Overrides */
+@media (max-width: 900px) {
+  .yt-shell,
+  .yt-body,
+  .yt-main,
+  .yt-main--with-sidebar,
+  .yt-main--with-mini-sidebar {
+    margin-left: 0 !important;
+    width: 100% !important;
+    max-width: 100vw !important;
+    box-sizing: border-box !important;
+  }
+
+  .yt-main {
+    padding-bottom: calc(52px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+
+  .yt-sidebar {
+    display: none !important;
+  }
+
+  .yt-channel {
+    width: 100% !important;
+    max-width: 100vw !important;
+    overflow-x: hidden !important;
+    box-sizing: border-box !important;
+  }
+
+  .yt-channel-banner {
+    width: 100% !important;
+    height: clamp(140px, 34vw, 240px) !important;
+  }
+
+  .yt-channel-header {
+    padding: 14px 16px 8px !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 12px !important;
+  }
+
+  .yt-channel-avatar {
+    width: clamp(64px, 16vw, 84px) !important;
+    height: clamp(64px, 16vw, 84px) !important;
+  }
+
+  .yt-channel-title {
+    font-size: 20px !important;
+  }
+
+  .yt-channel-clearlogo {
+    max-height: 48px !important;
+    max-width: 220px !important;
+  }
+
+  .yt-channel-meta {
+    font-size: 12px !important;
+    gap: 6px !important;
+  }
+
+  .yt-channel-actions {
+    gap: 8px !important;
+    width: 100% !important;
+  }
+
+  .yt-action-btn {
+    height: 32px !important;
+    padding: 0 12px !important;
+    font-size: 11.5px !important;
+  }
+
+  .yt-channel-tabs {
+    padding: 0 12px !important;
+    overflow-x: auto !important;
+    flex-wrap: nowrap !important;
+    -webkit-overflow-scrolling: touch !important;
+    scrollbar-width: none !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  .yt-channel-tabs::-webkit-scrollbar {
+    display: none !important;
+  }
+
+  .yt-channel-tab {
+    padding: 10px 14px !important;
+    font-size: 12px !important;
+    white-space: nowrap !important;
+    flex-shrink: 0 !important;
+  }
+
+  .yt-grid-container {
+    padding: 12px 12px 36px !important;
+    width: 100% !important;
+    max-width: 100vw !important;
+    box-sizing: border-box !important;
+  }
+
+  .yt-grid--episodes {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 12px 8px !important;
+  }
+
+  .yt-card--episode .yt-card__title {
+    font-size: 12px !important;
+    line-height: 1.3 !important;
+  }
+
+  .yt-card--episode .yt-card__stats {
+    font-size: 11px !important;
+  }
+
+  .yt-watch-layout {
+    flex-direction: column !important;
+    padding: 12px 16px !important;
+  }
+
+  .yt-watch-secondary {
+    width: 100% !important;
+    position: static !important;
+  }
+
+  .yt-watch-episodes-list {
+    max-height: 520px !important;
+  }
+}
+
+@media (max-width: 360px) {
+  .yt-grid--episodes {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+
+/* ── YouTube Watch Page Layout ── */
+.yt-watch-layout {
+  display: flex;
+  gap: 24px;
+  padding: 24px 32px 48px;
+  max-width: 1720px;
+  margin: 0 auto;
+}
+
+.yt-watch-primary {
+  flex: 1;
+  min-width: 0;
+}
+
+.yt-watch-player-box {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: 14px;
+  overflow: hidden;
+  background-color: #000;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+  position: relative;
+}
+
+.yt-watch-player-box .player {
+  width: 100% !important;
+  height: 100% !important;
+  max-width: 100% !important;
+  border-radius: 0 !important;
+}
+
+.yt-watch-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--yt-text-primary);
+  margin: 14px 0 10px;
+  line-height: 1.35;
+}
+
+.yt-watch-owner-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 14px;
+}
+
+.yt-watch-owner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.yt-watch-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  background-color: #333;
+}
+
+.yt-watch-owner-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.yt-watch-channel-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--yt-text-primary);
+  text-decoration: none;
+}
+
+.yt-watch-subs {
+  font-size: 12px;
+  color: var(--yt-text-secondary);
+}
+
+.yt-watch-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.yt-segmented-pill {
+  display: inline-flex;
+  align-items: center;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.yt-seg-btn {
+  background: none;
+  border: none;
+  color: var(--yt-text-primary);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 8px 14px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: background-color 0.15s;
+}
+
+.yt-seg-btn:hover {
+  background-color: rgba(255, 255, 255, 0.12);
+}
+
+.yt-seg-divider {
+  width: 1px;
+  height: 18px;
+  background-color: rgba(255, 255, 255, 0.18);
+}
+
+.yt-pill-btn {
+  background-color: rgba(255, 255, 255, 0.1);
+  border: none;
+  color: var(--yt-text-primary);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 8px 16px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background-color 0.15s;
+}
+
+.yt-pill-btn:hover {
+  background-color: rgba(255, 255, 255, 0.18);
+}
+
+.yt-watch-desc-box {
+  background-color: rgba(255, 255, 255, 0.06);
+  border-radius: 12px;
+  padding: 14px 16px;
+  margin-bottom: 24px;
+  transition: background-color 0.2s;
+  cursor: pointer;
+}
+
+.yt-watch-desc-box:hover {
+  background-color: rgba(255, 255, 255, 0.09);
+}
+
+.yt-watch-desc-stats {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--yt-text-primary);
+  margin-bottom: 8px;
+}
+
+.yt-watch-desc-text {
+  font-size: 14px;
+  color: var(--yt-text-primary);
+  line-height: 1.5;
+  white-space: pre-line;
+}
+
+/* ── YouTube Watch "Up Next" Sidebar ── */
+.yt-watch-secondary {
+  width: 400px;
+  flex-shrink: 0;
+  position: sticky;
+  top: calc(var(--yt-header-height) + 16px);
+  align-self: flex-start;
+}
+
+.yt-watch-episodes-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: clamp(380px, calc(100vh - var(--yt-header-height) - 180px), 820px);
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-right: 6px;
+  overscroll-behavior: contain;
+  scroll-behavior: smooth;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.22) transparent;
+}
+
+.yt-watch-episodes-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.yt-watch-episodes-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.yt-watch-episodes-list::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 9999px;
+}
+
+.yt-watch-episodes-list::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.38);
+}
+
+/* ── YouTube Watch Navigation Tabs (Matches Info Page Theme) ── */
+.yt-watch-tabs {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  border-bottom: 1px solid var(--yt-border);
+  margin-bottom: 16px;
+  padding: 0 2px;
+}
+
+.yt-watch-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.yt-watch-tab {
+  background: none;
+  border: none;
+  color: #888;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 10px 12px;
+  cursor: pointer;
+  position: relative;
+  transition: color 0.15s ease;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.yt-watch-tab:hover {
+  color: #e5e5e5;
+}
+
+.yt-watch-tab.is-active {
+  color: #fff;
+  font-weight: 700;
+}
+
+.yt-watch-tab.is-active::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background-color: #fff;
+}
+
+.yt-up-next-card {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 12px;
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+}
+
+.yt-up-next-thumb-box {
+  width: 168px;
+  aspect-ratio: 16 / 9;
+  border-radius: 8px;
+  overflow: hidden;
+  position: relative;
+  background-color: #202020;
+  flex-shrink: 0;
+}
+
+.yt-up-next-thumb {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.2s;
+}
+
+.yt-up-next-card:hover .yt-up-next-thumb {
+  transform: scale(1.04);
+}
+
+.yt-up-next-badge {
+  position: absolute;
+  bottom: 4px;
+  right: 4px;
+  background-color: rgba(0, 0, 0, 0.85);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 1px 4px;
+  border-radius: 3px;
+}
+
+.yt-up-next-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.yt-up-next-title {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--yt-text-primary);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  margin: 0 0 4px;
+}
+
+.yt-up-next-channel {
+  font-size: 12px;
+  color: var(--yt-text-secondary);
+  line-height: 1.2;
+}
+
+.yt-up-next-stats {
+  font-size: 12px;
+  color: var(--yt-text-secondary);
+  margin-top: 2px;
+}
+
+.yt-up-next-card.is-active {
+  background-color: rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  padding: 6px 8px;
+  margin: -2px -4px 6px -4px;
+  border-left: 3px solid var(--yt-red);
+}
+
+.yt-ep-tag {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  padding: 1px 5px;
+  border-radius: 4px;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #ddd;
+}
+
+.yt-ep-tag--dub {
+  background-color: rgba(62, 166, 255, 0.18);
+  color: #3ea6ff;
+}
+
+.yt-ep-search-wrap {
+  position: relative;
+  margin-bottom: 12px;
+}
+
+.yt-ep-search-input {
+  width: 100%;
+  box-sizing: border-box;
+  background-color: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  padding: 8px 32px 8px 12px;
+  color: #fff;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", sans-serif;
+  font-size: 12px;
+  outline: none;
+  transition: border-color 0.2s, background-color 0.2s;
+}
+
+.yt-ep-search-input:focus {
+  border-color: rgba(255, 255, 255, 0.35);
+  background-color: rgba(255, 255, 255, 0.09);
+}
+
+.yt-ep-search-clear {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: #888;
+  font-size: 14px;
+  cursor: pointer;
+  padding: 4px;
+  line-height: 1;
+}
+
+.yt-ep-search-clear:hover {
+  color: #fff;
+}
+
+/* ── Season Selector Components ── */
+.yt-season-selector-wrapper {
+  position: relative;
+  display: inline-block;
+  margin: 12px 0 16px;
+}
+
+.yt-season-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background-color: rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--yt-border);
+  color: var(--yt-text-primary);
+  font-size: 14px;
+  font-weight: 600;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.15s, border-color 0.15s;
+}
+
+.yt-season-btn:hover {
+  background-color: rgba(255, 255, 255, 0.14);
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+.yt-season-dropdown {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  background-color: #212121;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.7);
+  z-index: 100;
+  min-width: 260px;
+  max-height: 380px;
+  overflow-y: auto;
+  padding: 8px 0;
+}
+
+.yt-season-option {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  color: var(--yt-text-primary);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background-color 0.15s;
+}
+
+.yt-season-option:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.yt-season-option.is-active {
+  background-color: rgba(255, 255, 255, 0.15);
+  font-weight: 600;
+  color: #3ea6ff;
+}
+
+.yt-season-chips-row {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 8px 0 16px;
+  scrollbar-width: thin;
+}
+
+.yt-season-chip {
+  padding: 6px 14px;
+  border-radius: 8px;
+  background-color: rgba(255, 255, 255, 0.08);
+  color: var(--yt-text-primary);
+  font-size: 13px;
+  font-weight: 500;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background-color 0.15s;
+  border: 1px solid transparent;
+}
+
+.yt-season-chip:hover {
+  background-color: rgba(255, 255, 255, 0.16);
+}
+
+.yt-season-chip.is-active {
+  background-color: #ffffff;
+  color: #0f0f0f;
+  font-weight: 600;
+}
+
+.yt-season-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.yt-season-dropdown-header {
+  padding: 8px 16px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--yt-text-secondary);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  margin-bottom: 4px;
+}
+
+.yt-season-option-num {
+  font-weight: 700;
+  font-size: 12px;
+  background-color: rgba(255, 255, 255, 0.1);
+  padding: 2px 8px;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+
+.yt-season-option-details {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.yt-season-option-title {
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--yt-text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 180px;
+}
+
+.yt-season-option-meta {
+  font-size: 11px;
+  color: var(--yt-text-secondary);
+  margin-top: 1px;
+}
+
+/* ── Watch Page Season Boxes & Episode Ranges ── */
+.yt-watch-season-selector {
+  background-color: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 12px 14px;
+  margin-bottom: 16px;
+}
+
+.yt-watch-season-selector-label {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--yt-text-secondary);
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.yt-watch-season-boxes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(95px, 1fr));
+  gap: 8px;
+}
+
+.yt-watch-season-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background-color: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--yt-text-primary);
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  transition: background-color 0.15s, border-color 0.15s, transform 0.1s;
+}
+
+.yt-watch-season-box:hover {
+  background-color: rgba(255, 255, 255, 0.14);
+  border-color: rgba(255, 255, 255, 0.25);
+  transform: translateY(-1px);
+}
+
+.yt-watch-season-box.is-active {
+  background-color: #ffffff;
+  color: #0f0f0f;
+  border-color: #ffffff;
+  font-weight: 700;
+}
+
+.yt-watch-season-box-title {
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.yt-watch-season-box.is-active .yt-watch-season-box-title {
+  color: #0f0f0f;
+}
+
+.yt-watch-season-box-sub {
+  font-size: 11px;
+  opacity: 0.75;
+  margin-top: 2px;
+}
+
+/* Episode Range Selector Chips */
+.yt-episode-ranges-row {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  padding: 4px 0 12px;
+  scrollbar-width: thin;
+  align-items: center;
+}
+
+.yt-episode-range-chip {
+  padding: 6px 12px;
+  border-radius: 8px;
+  background-color: rgba(255, 255, 255, 0.08);
+  border: 1px solid transparent;
+  color: var(--yt-text-primary);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color 0.15s, border-color 0.15s;
+}
+
+.yt-episode-range-chip:hover {
+  background-color: rgba(255, 255, 255, 0.15);
+}
+
+.yt-episode-range-chip.is-active {
+  background-color: #ffffff;
+  color: #0f0f0f;
+  border-color: #ffffff;
+}
+
+/* ── Infinite Scroll & Shimmer Skeleton ── */
+@keyframes yt-shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.yt-card--skeleton {
+  pointer-events: none;
+  user-select: none;
+}
+
+.yt-skeleton-box {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: 12px;
+  background: linear-gradient(90deg, #1c1c1c 25%, #2a2a2a 50%, #1c1c1c 75%);
+  background-size: 200% 100%;
+  animation: yt-shimmer 1.5s infinite;
+}
+
+.yt-skeleton-circle {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: linear-gradient(90deg, #1c1c1c 25%, #2a2a2a 50%, #1c1c1c 75%);
+  background-size: 200% 100%;
+  animation: yt-shimmer 1.5s infinite;
+  flex-shrink: 0;
+}
+
+.yt-skeleton-line {
+  border-radius: 4px;
+  background: linear-gradient(90deg, #1c1c1c 25%, #2a2a2a 50%, #1c1c1c 75%);
+  background-size: 200% 100%;
+  animation: yt-shimmer 1.5s infinite;
+}
+
+.yt-infinite-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.yt-infinite-status {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 32px 0;
+}
+
+.yt-infinite-msg {
+  color: var(--yt-text-secondary);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+/* ── Trailer Button ── */
+.yt-btn-trailer {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 36px;
+  padding: 0 16px;
+  border-radius: 18px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: var(--yt-text-primary);
+  border: none;
+  transition: background-color 0.2s cubic-bezier(0.2, 0, 0, 1), transform 0.15s;
+}
+
+.yt-btn-trailer:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-1px);
+}
+
+.yt-btn-trailer svg {
+  color: var(--yt-red, #ff0033);
+}
+
+/* ── Trailer Autoplay Modal ── */
+.yt-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  animation: yt-fade-in 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes yt-fade-in {
+  from { opacity: 0; transform: scale(0.98); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.yt-modal-content {
+  width: 100%;
+  max-width: 900px;
+  background-color: #121212;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.9);
+}
+
+.yt-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 20px;
+  background-color: #181818;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.yt-modal-title {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: #fff;
+  display: flex;
+  align-items: center;
+}
+
+.yt-modal-close {
+  background: none;
+  border: none;
+  color: #aaa;
+  font-size: 18px;
+  line-height: 1;
+  padding: 6px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: color 0.15s, background-color 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.yt-modal-close:hover {
+  color: #fff;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.yt-modal-video-wrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background-color: #000;
+}
+
+.yt-modal-iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+/* ── Recommended Anime Grid & Cards (Compact Size) ── */
+.yt-grid--rec {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(115px, 1fr));
+  gap: 12px 10px;
+}
+
+@media (min-width: 600px) {
+  .yt-grid--rec {
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: 14px 12px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .yt-grid--rec {
+    grid-template-columns: repeat(auto-fill, minmax(138px, 1fr));
+    gap: 16px 12px;
+  }
+}
+
+.yt-rec-card {
+  display: flex;
+  flex-direction: column;
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+  background-color: transparent;
+  border: none;
+  border-radius: 8px;
+  padding: 0;
+  box-sizing: border-box;
+  transition: transform 0.15s ease;
+}
+
+.yt-rec-card:hover {
+  transform: translateY(-2px);
+}
+
+.yt-rec-card__thumb-box {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 2 / 3;
+  border-radius: 8px;
+  overflow: hidden;
+  background-color: #1e1e1e;
+  border: none;
+}
+
+.yt-rec-card__thumb {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s cubic-bezier(0.2, 0, 0, 1);
+}
+
+.yt-rec-card:hover .yt-rec-card__thumb {
+  transform: scale(1.04);
+}
+
+.yt-rec-card__badge {
+  position: absolute;
+  bottom: 4px;
+  right: 4px;
+  background-color: rgba(0, 0, 0, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+  padding: 1px 5px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  border-radius: 3px;
+}
+
+.yt-rec-card__meta {
+  margin-top: 6px;
+  padding: 2px 2px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.yt-rec-card__title {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.3;
+  color: #fff;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  margin: 0;
+}
+
+.yt-rec-card:hover .yt-rec-card__title {
+  color: #fff;
+}
+
+.yt-rec-card__sub {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", sans-serif;
+  font-size: 10.5px;
+  color: #888;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ── Episode Range Chips ── */
+
+.yt-episode-ranges-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.yt-episode-range-chip {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 5px 12px;
+  border-radius: 9999px;
+  background-color: #0b0b0b;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #ccc;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.yt-episode-range-chip:hover {
+  background-color: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.24);
+  color: #fff;
+}
+
+.yt-episode-range-chip.is-active {
+  background-color: #fff;
+  border-color: #fff;
+  color: #000;
+  font-weight: 700;
+}
+
+/* ── About Tab Monospace Cards ── */
+.yt-about-container {
+  max-width: 900px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.yt-about-card {
+  background-color: #0b0b0b;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 20px 24px;
+}
+
+.yt-about-desc {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", sans-serif;
+  font-size: 13px;
+  line-height: 1.65;
+  color: #bbb;
+  white-space: pre-line;
+  margin: 0;
+}
+
+.yt-about-details {
+  display: grid;
+  grid-template-columns: 140px 1fr;
+  gap: 12px 24px;
+  font-size: 13px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", sans-serif;
+}
+
+.yt-about-label {
+  color: #888;
+  text-transform: uppercase;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  font-weight: 600;
+}
+
+.yt-about-value {
+  color: #fff;
+  font-weight: 500;
+}
+
+/* ── Seasons Capsule Pill Row (Matches User Reference Image) ── */
+.yt-seasons-section {
+  margin-bottom: 28px;
+}
+
+.yt-seasons-header-title {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: #5c7b94;
+  margin: 0 0 14px 0;
+  padding: 0;
+}
+
+.yt-seasons-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  overflow-x: auto;
+  padding: 4px 2px 14px 2px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
+}
+
+.yt-seasons-row::-webkit-scrollbar {
+  height: 4px;
+}
+
+.yt-seasons-row::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.14);
+  border-radius: 2px;
+}
+
+.yt-seasons-row--wrap {
+  flex-wrap: wrap;
+  overflow-x: visible;
+  padding-bottom: 0;
+}
+
+.yt-season-pill {
+  position: relative;
+  width: 190px;
+  height: 56px;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1.5px solid rgba(255, 255, 255, 0.14);
+  background-color: #0c0c0c;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 16px;
+  box-sizing: border-box;
+  flex-shrink: 0;
+  text-decoration: none;
+  transition: border-color 0.2s cubic-bezier(0.2, 0, 0, 1), transform 0.15s ease, box-shadow 0.2s ease;
+}
+
+.yt-season-pill:hover {
+  border-color: rgba(255, 255, 255, 0.38);
+  transform: translateY(-2px);
+}
+
+.yt-season-pill.is-selected {
+  border: 2px solid #e5a93c;
+  box-shadow: 0 0 14px rgba(229, 169, 60, 0.35);
+}
+
+.yt-season-pill__bg {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center 25%;
+  filter: brightness(0.68) saturate(1.15);
+  transition: transform 0.35s cubic-bezier(0.2, 0, 0, 1);
+}
+
+.yt-season-pill:hover .yt-season-pill__bg {
+  transform: scale(1.08);
+}
+
+.yt-season-pill__overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(12, 12, 12, 0.45) 0%, rgba(6, 6, 6, 0.75) 100%);
+}
+
+.yt-season-pill__label {
+  position: relative;
+  z-index: 2;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", sans-serif;
+  font-size: 13.5px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: #ffffff;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.95);
+  white-space: nowrap;
+}
+
+.yt-season-pill__dot {
+  position: absolute;
+  top: 7px;
+  right: 9px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #e5a93c;
+  box-shadow: 0 0 6px rgba(229, 169, 60, 0.9);
+  z-index: 3;
+}
+
+/* Watch Page Underline Navigation Tabs below Player */
+.yt-watch-channel-tabs {
+  display: flex;
+  align-items: center;
+  padding: 0;
+  border-bottom: 1px solid var(--yt-border);
+  margin-top: 20px;
+  margin-bottom: 24px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  gap: 4px;
+}
+
+.yt-watch-channel-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.yt-watch-channel-tabs .yt-channel-tab {
+  padding: 12px 18px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   YOUTUBE SEARCH RESULTS PAGE
+   ───────────────────────────────────────────────────────────── */
+
+.yt-search-container {
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 16px 24px 64px;
+}
+
+.yt-search-filters {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding-bottom: 16px;
+  margin-bottom: 8px;
+  border-bottom: 1px solid var(--yt-border);
+}
+
+.yt-search-filters::-webkit-scrollbar {
+  display: none;
+}
+
+.yt-search-chip {
+  background-color: #272727;
+  color: #f1f1f1;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  padding: 6px 14px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color 0.15s, color 0.15s;
+}
+
+.yt-search-chip:hover {
+  background-color: #383838;
+}
+
+.yt-search-chip.is-active {
+  background-color: #f1f1f1;
+  color: #0f0f0f;
+  font-weight: 600;
+}
+
+.yt-search-header-meta {
+  font-size: 14px;
+  color: var(--yt-text-secondary);
+  margin-bottom: 20px;
+  padding-left: 4px;
+}
+
+.yt-search-header-meta strong {
+  color: var(--yt-text-primary);
+}
+
+/* List of Horizontal YouTube Video Cards */
+.yt-search-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.yt-search-card {
+  display: flex;
+  gap: 18px;
+  padding: 8px;
+  border-radius: 12px;
+  text-decoration: none;
+  color: inherit;
+  transition: background-color 0.15s;
+}
+
+.yt-search-card:hover {
+  background-color: rgba(255, 255, 255, 0.04);
+}
+
+/* 16:9 Thumbnail on Left */
+.yt-search-card__thumb-box {
+  position: relative;
+  width: 360px;
+  min-width: 360px;
+  aspect-ratio: 16 / 9;
+  border-radius: 12px;
+  overflow: hidden;
+  background-color: #1a1a1a;
+  flex-shrink: 0;
+}
+
+.yt-search-card__thumb {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.25s ease;
+}
+
+.yt-search-card:hover .yt-search-card__thumb {
+  transform: scale(1.03);
+}
+
+.yt-search-card__badge {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  background-color: rgba(0, 0, 0, 0.85);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 2px 6px;
+  border-radius: 4px;
+  letter-spacing: 0.2px;
+}
+
+/* Info Details on Right */
+.yt-search-card__info {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+  padding: 4px 0;
+}
+
+.yt-search-card__title {
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 1.35;
+  color: var(--yt-text-primary);
+  margin: 0 0 8px 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.yt-search-card:hover .yt-search-card__title {
+  color: var(--yt-blue);
+}
+
+.yt-search-card__channel-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  font-size: 13px;
+  color: var(--yt-text-secondary);
+}
+
+.yt-search-card__channel-avatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  object-fit: cover;
+  background-color: #222;
+}
+
+.yt-search-card__channel-name {
+  font-weight: 500;
+}
+
+.yt-search-card__verified {
+  color: #aaa;
+  flex-shrink: 0;
+}
+
+.yt-search-card__meta-line {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--yt-text-secondary);
+  margin-bottom: 8px;
+}
+
+.yt-search-card__score {
+  color: #f59e0b;
+  font-weight: 600;
+}
+
+.yt-search-card__desc {
+  font-size: 13px;
+  color: var(--yt-text-secondary);
+  line-height: 1.45;
+  margin: 0 0 10px 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.yt-search-card__tags {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.yt-search-pill {
+  background-color: rgba(255, 255, 255, 0.08);
+  color: var(--yt-text-secondary);
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.yt-search-pill--sub {
+  background-color: rgba(59, 130, 246, 0.15);
+  color: #60a5fa;
+}
+
+.yt-search-pill--dub {
+  background-color: rgba(16, 185, 129, 0.15);
+  color: #34d399;
+}
+
+/* Pagination */
+.yt-search-pager {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 40px;
+}
+
+.yt-search-pager__btn {
+  background-color: #222;
+  color: #fff;
+  border: 1px solid var(--yt-border);
+  padding: 10px 22px;
+  border-radius: 24px;
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: background-color 0.15s;
+}
+
+.yt-search-pager__btn:hover:not(.is-disabled) {
+  background-color: #333;
+}
+
+.yt-search-pager__btn.is-disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.yt-search-pager__page {
+  font-size: 14px;
+  color: var(--yt-text-secondary);
+  font-weight: 500;
+}
+
+/* Empty state */
+.yt-search-empty {
+  text-align: center;
+  padding: 64px 20px;
+}
+
+.yt-search-empty__icon {
+  color: var(--yt-text-secondary);
+  margin-bottom: 16px;
+}
+
+.yt-search-empty h3 {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--yt-text-primary);
+  margin-bottom: 8px;
+}
+
+.yt-search-empty p {
+  font-size: 14px;
+  color: var(--yt-text-secondary);
+}
+
+/* Responsive for mobile & tablets */
+@media (max-width: 768px) {
+  .yt-search-container {
+    padding: 12px 16px 48px;
+  }
+
+  .yt-search-card {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .yt-search-card__thumb-box {
+    width: 100%;
+    min-width: 0;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   YouTube Manga Section Styling
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Manga Poster Grid & Recommended-Style Cards */
+.yt-grid--manga {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 20px 14px;
+}
+
+@media (min-width: 600px) {
+  .yt-grid--manga {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 22px 16px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .yt-grid--manga {
+    grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+    gap: 24px 18px;
+  }
+}
+
+@media (min-width: 1440px) {
+  .yt-grid--manga {
+    grid-template-columns: repeat(auto-fill, minmax(185px, 1fr));
+    gap: 26px 20px;
+  }
+}
+
+.yt-manga-rec-card {
+  display: flex;
+  flex-direction: column;
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+  background-color: transparent;
+  border-radius: 10px;
+  transition: transform 0.2s cubic-bezier(0.2, 0, 0, 1);
+}
+
+.yt-manga-rec-card:hover {
+  transform: translateY(-4px);
+}
+
+.yt-manga-rec-card__thumb-box {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 2 / 3;
+  border-radius: 10px;
+  overflow: hidden;
+  background-color: var(--yt-surface);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+  border: 1px solid var(--yt-border-subtle);
+}
+
+.yt-manga-rec-card .yt-rec-card__thumb {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.3s cubic-bezier(0.2, 0, 0, 1);
+}
+
+.yt-manga-rec-card__placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: linear-gradient(145deg, #1f1f26 0%, #121216 100%);
+  color: rgba(255, 255, 255, 0.35);
+  box-sizing: border-box;
+  padding: 16px;
+}
+
+.yt-manga-rec-card__placeholder-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.yt-manga-rec-card:hover .yt-rec-card__thumb {
+  transform: scale(1.05);
+}
+
+.yt-manga-rec-card .yt-rec-card__badge {
+  position: absolute;
+  bottom: 6px;
+  right: 6px;
+  z-index: 3;
+  background-color: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+  padding: 2px 6px;
+  font-size: 11px;
+  font-weight: 700;
+  border-radius: 4px;
+  letter-spacing: 0.3px;
+}
+
+.yt-manga-rec-card .yt-rec-card__quick-save {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  z-index: 4;
+  opacity: 0;
+  transition: opacity 0.15s ease-in-out;
+}
+
+.yt-manga-rec-card:hover .yt-rec-card__quick-save {
+  opacity: 1;
+}
+
+.yt-manga-rec-card .yt-rec-card__quick-save .save-icon-btn {
+  background: rgba(15, 15, 15, 0.85);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: var(--yt-text-primary);
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  transition: background-color 0.15s, transform 0.15s;
+}
+
+.yt-manga-rec-card .yt-rec-card__quick-save .save-icon-btn:hover {
+  background: rgba(30, 30, 30, 0.98);
+  transform: scale(1.1);
+}
+
+.yt-manga-rec-card .yt-rec-card__meta {
+  margin-top: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.yt-manga-rec-card .yt-rec-card__title {
+  font-size: 13.5px;
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--yt-text-primary);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  margin: 0;
+  transition: color 0.15s;
+}
+
+.yt-manga-rec-card:hover .yt-rec-card__title {
+  color: var(--yt-blue);
+}
+
+.yt-manga-rec-card .yt-rec-card__sub {
+  font-size: 12px;
+  color: var(--yt-text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Manga Channel Detail View */
+.yt-manga-channel .yt-channel-avatar-box {
+  width: 120px;
+  height: 175px;
+  border-radius: 12px;
+  overflow: hidden;
+  flex-shrink: 0;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+  border: 2px solid rgba(255, 255, 255, 0.12);
+}
+
+.yt-manga-channel .yt-channel-avatar {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 0;
+}
+.yt-manga-jp-title {
+  font-size: 14px;
+  color: var(--yt-text-secondary);
+  margin-top: 4px;
+}
+
+.yt-manga-score {
+  color: #f59e0b;
+  font-weight: 600;
+}
+
+.yt-manga-status-tag {
+  color: var(--yt-blue);
+  font-weight: 500;
+}
+
+.yt-manga-genres {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+/* YouTube Channel Action Buttons */
+.yt-channel-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.yt-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 38px;
+  padding: 0 18px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 0.15s ease, transform 0.15s ease;
+  white-space: nowrap;
+}
+
+.yt-btn--primary {
+  background-color: var(--yt-text-primary);
+  color: var(--yt-bg);
+  border: none;
+}
+
+.yt-btn--primary:hover {
+  background-color: #d8d8d8;
+  transform: translateY(-1px);
+}
+
+.yt-btn--secondary {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: var(--yt-text-primary);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.yt-btn--secondary:hover {
+  background-color: rgba(255, 255, 255, 0.18);
+  transform: translateY(-1px);
+}
+
+.yt-subscribe-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 38px;
+  padding: 0 18px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 500;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: var(--yt-text-primary);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.yt-subscribe-btn:hover {
+  background-color: rgba(255, 255, 255, 0.18);
+}
+
+.yt-subscribe-btn.is-saved {
+  background-color: rgba(62, 166, 255, 0.18);
+  color: var(--yt-blue);
+  border-color: rgba(62, 166, 255, 0.35);
+}
+
+.yt-action-icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: var(--yt-text-primary);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.yt-action-icon-btn:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Manga Chapters Section */
+.yt-manga-chapters-section {
+  display: flex;
+  flex-direction: column;
+}
+
+.yt-manga-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.yt-manga-search-wrap {
+  display: flex;
+  align-items: center;
+  background-color: var(--yt-surface);
+  border: 1px solid var(--yt-border);
+  border-radius: 20px;
+  padding: 0 14px;
+  width: 100%;
+  max-width: 360px;
+  height: 38px;
+  transition: border-color 0.2s, background-color 0.2s;
+}
+
+.yt-manga-search-wrap:focus-within {
+  border-color: var(--yt-blue);
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.yt-manga-search-input {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--yt-text-primary);
+  font-size: 14px;
+  width: 100%;
+  margin-left: 8px;
+  font-family: inherit;
+}
+
+.yt-manga-search-input::placeholder {
+  color: var(--yt-text-secondary);
+}
+
+.yt-manga-clear-btn {
+  background: transparent;
+  border: none;
+  color: var(--yt-text-secondary);
+  cursor: pointer;
+  font-size: 12px;
+  padding: 4px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.yt-manga-clear-btn:hover {
+  color: var(--yt-text-primary);
+}
+
+.yt-sort-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background-color: var(--yt-surface);
+  border: 1px solid var(--yt-border);
+  color: var(--yt-text-primary);
+  font-size: 13px;
+  font-weight: 500;
+  padding: 8px 14px;
+  border-radius: 18px;
+  cursor: pointer;
+  transition: background-color 0.15s;
+}
+
+.yt-sort-btn:hover {
+  background-color: var(--yt-surface-hover);
+}
+
+.yt-range-bar {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 12px;
+  margin-bottom: 20px;
+  scrollbar-width: none;
+}
+
+.yt-range-bar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Video-style Chapter Grid Cards */
+.yt-card--manga-ch .yt-card__thumb-box {
+  background-color: var(--yt-surface);
+  position: relative;
+  overflow: hidden;
+}
+
+.yt-card__thumb--chapter-bg {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  filter: brightness(0.4) saturate(0.9);
+  transition: transform 0.25s, filter 0.25s;
+}
+
+.yt-card--manga-ch:hover .yt-card__thumb--chapter-bg {
+  filter: brightness(0.6) saturate(1.1);
+  transform: scale(1.05);
+}
+
+.yt-chapter-thumb-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.yt-chapter-num-badge {
+  font-size: 14px;
+  font-weight: 700;
+  color: #ffffff;
+  background: rgba(0, 0, 0, 0.55);
+  padding: 5px 12px;
+  border-radius: 6px;
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  letter-spacing: 0.3px;
+}
+
+.yt-card--manga-ch .yt-card__meta-row {
+  margin-top: 10px;
+}
+
+.yt-card--manga-ch .yt-card__info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.yt-card--manga-ch .yt-card__title {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--yt-text-primary);
+  line-height: 1.3;
+}
+
+.yt-card--manga-ch .yt-card__stats {
+  font-size: 12px;
+  color: var(--yt-text-secondary);
+}
+
+/* ── Authentic Manga Detail Page Enhancements ── */
+.title--manga {
+  position: relative;
+  min-height: 100vh;
+  padding-bottom: 64px;
+}
+
+.title--manga .title__wash {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 320px;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+  background: #0f0f0f;
+}
+
+.title--manga .title__wash img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 25%;
+  opacity: 0.06 !important;
+  filter: blur(65px) brightness(0.2) saturate(0.6) !important;
+  transform: scale(1.3) !important;
+}
+
+.title--manga .title__wash::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(15, 15, 15, 0.7) 0%,
+    rgba(15, 15, 15, 0.94) 60%,
+    var(--yt-bg, #0f0f0f) 100%
+  ) !important;
+}
+
+.title--manga .title__in {
+  position: relative;
+  z-index: 1;
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 20px 24px 48px;
+}
+
+.title--manga .crumbs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--yt-text-secondary, #aaa);
+  margin-bottom: 16px;
+}
+
+.title--manga .crumbs a {
+  color: var(--yt-blue, #3ea6ff);
+  text-decoration: none;
+}
+
+.title--manga .crumbs a:hover {
+  text-decoration: underline;
+}
+
+.title--manga .title__grid {
+  display: grid !important;
+  grid-template-columns: 165px minmax(0, 1fr) !important;
+  grid-template-areas:
+    "art lead"
+    "art actions"
+    "art details" !important;
+  column-gap: 24px !important;
+  row-gap: 12px !important;
+  align-items: start !important;
+}
+
+@media (max-width: 768px) {
+  .title--manga .title__grid {
+    grid-template-columns: 1fr !important;
+    grid-template-areas:
+      "art"
+      "lead"
+      "actions"
+      "details" !important;
+    row-gap: 16px !important;
+  }
+}
+
+.title--manga .title__art,
+.title--manga .title__art--sharp {
+  width: 165px !important;
+  max-width: 165px !important;
+  aspect-ratio: 2 / 3 !important;
+  border-radius: 10px !important;
+  overflow: hidden !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(255, 255, 255, 0.1) !important;
+  border: none !important;
+  background-color: var(--yt-surface, #1e1e1e) !important;
+  position: relative !important;
+  flex-shrink: 0 !important;
+  align-self: start !important;
+}
+
+.title--manga .title__art img,
+.title--manga .title__art--sharp img {
+  border-radius: 10px !important;
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  position: relative !important;
+  display: block !important;
+}
+
+.title--manga .title__h {
+  font-size: clamp(22px, 3vw, 28px);
+  font-weight: 700;
+  color: #ffffff;
+  line-height: 1.25;
+  margin: 0;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+}
+
+.title--manga .title__jp {
+  font-size: 13.5px;
+  color: var(--yt-text-secondary, #aaa);
+  margin-top: 4px;
+}
+
+.title--manga .title__pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.title--manga .title__pills .pill {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 9px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: var(--yt-text-primary, #fff);
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+}
+
+.title--manga .title__pills .pill--accent {
+  background: rgba(245, 158, 11, 0.15);
+  border-color: rgba(245, 158, 11, 0.35);
+  color: #f59e0b;
+}
+
+.title--manga .title__ctaRow {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.title--manga .cta {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.title--manga .cta .btn--accent {
+  background: #ffffff !important;
+  color: #0f0f0f !important;
+  font-weight: 600 !important;
+  font-size: 13px !important;
+  padding: 7px 18px !important;
+  border-radius: 18px !important;
+  text-decoration: none !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  transition: all 0.15s ease !important;
+  box-shadow: 0 2px 8px rgba(255, 255, 255, 0.12) !important;
+  border: none !important;
+}
+
+.title--manga .cta .btn--accent:hover {
+  background: #e5e5e5 !important;
+  transform: translateY(-1px) !important;
+}
+
+.title--manga .cta .btn--ghost {
+  background: rgba(255, 255, 255, 0.08) !important;
+  color: var(--yt-text-primary, #fff) !important;
+  font-weight: 500 !important;
+  font-size: 13px !important;
+  padding: 7px 16px !important;
+  border-radius: 18px !important;
+  text-decoration: none !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  transition: all 0.15s ease !important;
+}
+
+.title--manga .cta .btn--ghost:hover {
+  background: rgba(255, 255, 255, 0.15) !important;
+  transform: translateY(-1px) !important;
+}
+
+.title--manga .title__details {
+  margin-top: 2px;
+}
+
+.title--manga .title__syn {
+  color: var(--yt-text-secondary, #b3b3b3) !important;
+  font-size: 13px !important;
+  line-height: 1.55 !important;
+}
+
+.title--manga .synopsis-toggle {
+  background: none;
+  border: none;
+  color: var(--yt-blue, #3ea6ff) !important;
+  font-weight: 600;
+  font-size: 12.5px;
+  cursor: pointer;
+  padding: 3px 0;
+  margin-top: 3px;
+  display: inline-block;
+}
+
+.title--manga .synopsis-toggle:hover {
+  text-decoration: underline;
+}
+
+.title--manga .chipwrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.title--manga .chip {
+  display: inline-flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  color: var(--yt-text-secondary, #ccc);
+  font-size: 11.5px;
+  font-weight: 500;
+  padding: 3px 9px;
+  border-radius: 6px;
+  transition: all 0.15s ease;
+}
+
+.title--manga .chip:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: var(--yt-blue);
+  color: var(--yt-blue);
+}
+
+.title--manga .facts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+  gap: 12px;
+  margin-top: 24px;
+  padding: 12px 18px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.title--manga .facts dt {
+  font-size: 11px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--yt-text-secondary);
+}
+
+.title--manga .facts dd {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--yt-text-primary);
+  margin-top: 2px;
+}
+
+/* Manga Chapters Header, Range Bar & Filter Tools */
+.manga-chapters__head {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: flex-end !important;
+  flex-wrap: wrap !important;
+  gap: 14px !important;
+}
+
+.manga-chapters__tools {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.manga-chapters__search-box {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.manga-chapters__search-icon {
+  position: absolute;
+  left: 10px;
+  color: var(--yt-text-secondary, #aaa);
+  pointer-events: none;
+}
+
+.manga-chapters__search-input {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: var(--yt-text-primary, #fff);
+  border-radius: 9999px;
+  padding: 6px 26px 6px 30px;
+  font-size: 12px;
+  width: 125px;
+  transition: all 0.2s ease;
+}
+
+.manga-chapters__search-input:focus {
+  outline: none;
+  border-color: var(--yt-blue, #3ea6ff);
+  background: rgba(255, 255, 255, 0.08);
+  width: 160px;
+}
+
+.manga-chapters__search-clear {
+  position: absolute;
+  right: 8px;
+  background: none;
+  border: none;
+  color: var(--yt-text-secondary, #aaa);
+  cursor: pointer;
+  font-size: 11px;
+  padding: 2px;
+}
+
+.manga-chapters__sort-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: var(--yt-text-primary, #fff);
+  border-radius: 9999px;
+  padding: 6px 14px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.manga-chapters__sort-btn:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+.manga-chapters__ranges-wrap {
+  margin-top: 14px;
+}
+
+.manga-chapters__range-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--yt-text-secondary, #aaa);
+  margin-right: 4px;
+  flex-shrink: 0;
+}
+
+.manga-chapters__search-count {
+  font-size: 12.5px;
+  color: var(--yt-text-secondary, #aaa);
+  margin-top: 12px;
+}
+
+.manga-chapters__empty {
+  padding: 32px 16px;
+  text-align: center;
+  color: var(--yt-text-secondary, #aaa);
+  font-size: 14px;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 8px;
+  margin-top: 16px;
+}
+
+/* Manga Chapters Grid */
+.eps--manga {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.ep--manga {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  text-decoration: none;
+  transition: all 0.15s ease;
+}
+
+.ep--manga:hover {
+  background: rgba(255, 255, 255, 0.09);
+  border-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-1px);
+}
+
+.ep--manga .ep__n {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--yt-blue);
+  min-width: 32px;
+}
+
+.ep--manga .ep__t {
+  flex: 1;
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--yt-text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding: 0 10px;
+}
+
+.ep--manga .ep__tag {
+  font-size: 11px;
+  color: var(--yt-text-secondary);
+  background: rgba(255, 255, 255, 0.06);
+  padding: 2px 7px;
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+/* ═════════════════════════════════════════════════════════════════
+   Manga Section Floating Search Dock View System
+   ═════════════════════════════════════════════════════════════════ */
+.manga-dock-container {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 850;
+  width: auto;
+  max-width: calc(100vw - 32px);
+  pointer-events: auto;
+  animation: mangaDockEntrance 0.35s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+}
+
+@media (max-width: 768px) {
+  .manga-dock-container {
+    bottom: calc(54px + env(safe-area-inset-bottom, 0px) + 8px) !important;
+    width: calc(100vw - 20px) !important;
+    max-width: 480px !important;
+  }
+}
+
+
+@keyframes mangaDockEntrance {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, 20px) scale(0.96);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%, 0) scale(1);
+  }
+}
+
+.manga-dock-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  background: rgba(18, 18, 22, 0.88);
+  backdrop-filter: blur(28px) saturate(190%);
+  -webkit-backdrop-filter: blur(28px) saturate(190%);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 9999px;
+  box-shadow: 
+    0 16px 36px rgba(0, 0, 0, 0.6),
+    0 0 0 1px rgba(255, 255, 255, 0.06),
+    inset 0 1px 1px rgba(255, 255, 255, 0.15);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.manga-dock-bar.is-focused,
+.manga-dock-bar:hover {
+  border-color: rgba(255, 255, 255, 0.28);
+  box-shadow: 
+    0 20px 44px rgba(0, 0, 0, 0.7),
+    0 0 0 1px rgba(62, 166, 255, 0.3),
+    inset 0 1px 1px rgba(255, 255, 255, 0.2);
+}
+
+.manga-dock-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+  padding: 6px 12px;
+  border-radius: 9999px;
+  text-decoration: none;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  transition: all 0.15s ease;
+  flex-shrink: 0;
+  cursor: pointer;
+  user-select: none;
+}
+
+.manga-dock-badge:hover,
+.manga-dock-badge.is-open {
+  background: rgba(255, 255, 255, 0.16);
+  border-color: rgba(62, 166, 255, 0.4);
+}
+
+.manga-dock-badge svg {
+  color: var(--yt-blue, #3ea6ff);
+}
+
+.manga-dock-badge__chevron {
+  transition: transform 0.2s ease;
+  opacity: 0.7;
+}
+
+.manga-dock-badge__chevron.is-rotated {
+  transform: rotate(180deg);
+  opacity: 1;
+}
+
+/* ── Type Selector Menu Popover ── */
+.manga-dock-type-menu {
+  position: absolute;
+  bottom: calc(100% + 14px);
+  left: 0;
+  width: 210px;
+  background: rgba(20, 20, 26, 0.95);
+  backdrop-filter: blur(32px) saturate(200%);
+  -webkit-backdrop-filter: blur(32px) saturate(200%);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 16px;
+  box-shadow: 
+    0 24px 50px rgba(0, 0, 0, 0.8),
+    0 0 0 1px rgba(255, 255, 255, 0.08);
+  padding: 6px;
+  z-index: 1000;
+  animation: mangaTypeMenuEntrance 0.2s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+}
+
+@keyframes mangaTypeMenuEntrance {
+  0% {
+    opacity: 0;
+    transform: translateY(10px) scale(0.96);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.manga-dock-type-menu__header {
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--yt-text-secondary, #aaa);
+  padding: 8px 10px 6px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  margin-bottom: 4px;
+}
+
+.manga-dock-type-menu__item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: transparent;
+  border: none;
+  color: var(--yt-text-primary, #ffffff);
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.15s ease;
+}
+
+.manga-dock-type-menu__item:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.manga-dock-type-menu__item.is-selected {
+  background: rgba(62, 166, 255, 0.14);
+}
+
+.manga-dock-type-menu__item-left {
+  display: flex;
+  flex-direction: column;
+}
+
+.manga-dock-type-menu__item-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.manga-dock-type-menu__item-desc {
+  font-size: 11px;
+  color: var(--yt-text-secondary, #aaa);
+  margin-top: 1px;
+}
+
+.manga-dock-type-menu__check {
+  color: var(--yt-blue, #3ea6ff);
+}
+
+.manga-dock-form {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.manga-dock-input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.manga-dock-search-icon {
+  position: absolute;
+  left: 12px;
+  color: var(--yt-text-secondary, #aaa);
+  pointer-events: none;
+  transition: color 0.15s ease;
+}
+
+.manga-dock-bar.is-focused .manga-dock-search-icon {
+  color: var(--yt-blue, #3ea6ff);
+}
+
+.manga-dock-input {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--yt-text-primary, #ffffff);
+  border-radius: 9999px;
+  padding: 7px 32px 7px 34px;
+  font-size: 13px;
+  width: 220px;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  font-family: inherit;
+}
+
+.manga-dock-input:focus {
+  outline: none;
+  width: 280px;
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(62, 166, 255, 0.5);
+}
+
+.manga-dock-input::placeholder {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.manga-dock-clear-btn {
+  position: absolute;
+  right: 10px;
+  background: none;
+  border: none;
+  color: var(--yt-text-secondary, #aaa);
+  cursor: pointer;
+  font-size: 12px;
+  padding: 2px 4px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.15s ease;
+}
+
+.manga-dock-clear-btn:hover {
+  color: #ffffff;
+}
+
+.manga-dock-shortcut-badge {
+  position: absolute;
+  right: 10px;
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 4px;
+  padding: 1px 5px;
+  pointer-events: none;
+  user-select: none;
+}
+
+.manga-dock-submit-btn {
+  background: var(--yt-blue, #3ea6ff);
+  color: #0f0f0f;
+  border: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  flex-shrink: 0;
+}
+
+.manga-dock-submit-btn:hover {
+  background: #ffffff;
+  transform: scale(1.06);
+}
+
+.manga-dock-divider {
+  width: 1px;
+  height: 22px;
+  background: rgba(255, 255, 255, 0.14);
+  margin: 0 4px;
+}
+
+.manga-dock-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.manga-dock-action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--yt-text-primary, #ffffff);
+  padding: 6px 10px;
+  border-radius: 9999px;
+  text-decoration: none;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.manga-dock-action-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.14);
+  transform: translateY(-1px);
+}
+
+.manga-dock-action-btn--scroll {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  justify-content: center;
+}
+
+/* ── Live Popover (Floats above the Dock) ── */
+.manga-dock-popover {
+  position: absolute;
+  bottom: calc(100% + 14px);
+  left: 50%;
+  transform: translateX(-50%);
+  width: 440px;
+  max-width: calc(100vw - 32px);
+  max-height: 420px;
+  background: rgba(20, 20, 26, 0.94);
+  backdrop-filter: blur(32px) saturate(200%);
+  -webkit-backdrop-filter: blur(32px) saturate(200%);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 18px;
+  box-shadow: 
+    0 24px 50px rgba(0, 0, 0, 0.8),
+    0 0 0 1px rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  animation: mangaPopoverEntrance 0.2s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+}
+
+@keyframes mangaPopoverEntrance {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, 10px) scale(0.97);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%, 0) scale(1);
+  }
+}
+
+.manga-dock-popover__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px 8px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--yt-text-secondary, #aaa);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.manga-dock-popover__hint {
+  font-size: 10px;
+  font-weight: 500;
+  text-transform: none;
+  letter-spacing: normal;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.manga-dock-popover__list {
+  overflow-y: auto;
+  max-height: 320px;
+  padding: 6px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+}
+
+.manga-dock-popover__item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 10px;
+  border-radius: 12px;
+  text-decoration: none;
+  transition: all 0.15s ease;
+  color: inherit;
+}
+
+.manga-dock-popover__item:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.manga-dock-popover__thumb {
+  width: 36px;
+  height: 52px;
+  border-radius: 6px;
+  overflow: hidden;
+  background: #1e1e24;
+  flex-shrink: 0;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.manga-dock-popover__thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.manga-dock-popover__thumb-fallback {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.manga-dock-popover__meta {
+  flex: 1;
+  min-width: 0;
+}
+
+.manga-dock-popover__title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #ffffff;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.manga-dock-popover__sub {
+  font-size: 11.5px;
+  color: var(--yt-text-secondary, #aaa);
+  margin-top: 2px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.manga-dock-popover__author {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.manga-dock-popover__badge {
+  font-size: 11px;
+  font-weight: 700;
+  color: #f59e0b;
+  background: rgba(245, 158, 11, 0.14);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  padding: 2px 7px;
+  border-radius: 6px;
+  flex-shrink: 0;
+}
+
+.manga-dock-popover__loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 28px 16px;
+  font-size: 12.5px;
+  color: var(--yt-text-secondary, #aaa);
+}
+
+.manga-dock-spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.15);
+  border-top-color: var(--yt-blue, #3ea6ff);
+  border-radius: 50%;
+  animation: mangaSpin 0.7s linear infinite;
+}
+
+@keyframes mangaSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.manga-dock-popover__empty {
+  padding: 24px 16px;
+  text-align: center;
+  font-size: 13px;
+  color: var(--yt-text-secondary, #aaa);
+}
+
+.manga-dock-popover__viewall {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background: rgba(255, 255, 255, 0.04);
+  border: none;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  color: var(--yt-blue, #3ea6ff);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  width: 100%;
+  transition: background-color 0.15s ease;
+}
+
+.manga-dock-popover__viewall:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* Mobile responsive dock — sits cleanly above YouTube bottom navigation */
+@media (max-width: 768px) {
+  .manga-dock-container {
+    bottom: calc(52px + env(safe-area-inset-bottom, 0px) + 8px) !important;
+    width: calc(100vw - 20px) !important;
+    max-width: 480px !important;
+  }
+
+  .manga-dock-bar {
+    padding: 5px 8px;
+  }
+
+  .manga-dock-badge__text,
+  .manga-dock-action-text {
+    display: none;
+  }
+
+  .manga-dock-input {
+    width: 140px;
+  }
+
+  .manga-dock-input:focus {
+    width: 180px;
+  }
+
+  .manga-dock-popover {
+    width: calc(100vw - 20px);
+    bottom: calc(100% + 8px);
+  }
+}
+
+
+

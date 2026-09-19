@@ -1,0 +1,101 @@
+/* ==========================================================================
+   YouTube Mobile Bottom Navigation Bar
+   ========================================================================== */
+
+.bottomNav {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  height: calc(48px + env(safe-area-inset-bottom, 0px));
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  background-color: #0f0f0f;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  z-index: 900;
+  user-select: none;
+  -webkit-user-select: none;
+  box-sizing: border-box;
+}
+
+[data-theme="light"] .bottomNav {
+  background-color: #ffffff;
+  border-top-color: rgba(0, 0, 0, 0.1);
+}
+
+.navInner {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  width: 100%;
+  height: 48px;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.navItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  height: 100%;
+  color: #aaaaaa;
+  text-decoration: none;
+  gap: 2px;
+  padding: 4px 0;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+  transition: color 0.15s ease;
+}
+
+[data-theme="light"] .navItem {
+  color: #606060;
+}
+
+.iconWrap {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.iconOutline,
+.iconFilled {
+  width: 22px;
+  height: 22px;
+  display: block;
+}
+
+.label {
+  font-size: 10px;
+  font-weight: 400;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  font-family: -apple-system, BlinkMacSystemFont, "Roboto", "Segoe UI", sans-serif;
+  color: inherit;
+}
+
+/* Active State */
+.navItem.isActive {
+  color: #ffffff;
+}
+
+[data-theme="light"] .navItem.isActive {
+  color: #0f0f0f;
+}
+
+.navItem.isActive .label {
+  font-weight: 500;
+}
+
+/* Show on mobile/tablet */
+@media (max-width: 768px) {
+  .bottomNav {
+    display: block;
+  }
+}
+
+

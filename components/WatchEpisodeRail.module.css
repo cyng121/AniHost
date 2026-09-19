@@ -1,0 +1,257 @@
+/* Apple TV & Netflix Style Horizontal Episode Rail */
+
+.railSection {
+  margin-top: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+}
+
+.railHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.titleArea {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.railTitle {
+  font-size: clamp(18px, 2.5vw, 22px);
+  font-weight: 750;
+  color: #fff;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+
+.countBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: rgba(255, 61, 143, 0.15);
+  color: #ff6ba8;
+  border: 1px solid rgba(255, 61, 143, 0.3);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.navArrows {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.arrowBtn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.06);
+  color: #fff;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+  transition: all 0.18s ease;
+}
+
+.arrowBtn:hover:not(:disabled) {
+  background: rgba(255, 61, 143, 0.25);
+  border-color: #ff3d8f;
+  transform: scale(1.08);
+}
+
+.arrowBtn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.railTrack {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  padding: 8px 4px 16px;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+}
+
+.railTrack::-webkit-scrollbar {
+  height: 6px;
+}
+
+.railTrack::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.railTrack::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.18);
+  border-radius: 999px;
+}
+
+.railTrack::-webkit-scrollbar-thumb:hover {
+  background: var(--accent, #ff3d8f);
+}
+
+.card {
+  flex: 0 0 clamp(220px, 22vw, 290px);
+  display: flex;
+  flex-direction: column;
+  border-radius: 14px;
+  background: rgba(18, 17, 26, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+  text-decoration: none;
+  color: #fff;
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.22s ease, box-shadow 0.22s ease;
+  outline: none;
+}
+
+.card:hover {
+  transform: translateY(-4px) scale(1.02);
+  border-color: rgba(255, 61, 143, 0.5);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.6), 0 0 18px rgba(255, 61, 143, 0.25);
+}
+
+.card:focus-visible {
+  outline: 3px solid #ff3d8f;
+  outline-offset: 2px;
+  transform: translateY(-4px) scale(1.03);
+  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.7), 0 0 24px rgba(255, 61, 143, 0.5);
+}
+
+.cardActive {
+  border-color: #ff3d8f;
+  background: rgba(30, 20, 36, 0.92);
+  box-shadow: 0 0 22px rgba(255, 61, 143, 0.35), inset 0 0 0 1px #ff3d8f;
+}
+
+.thumbWrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: #000;
+  overflow: hidden;
+}
+
+.thumbImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.card:hover .thumbImg {
+  transform: scale(1.06);
+}
+
+.thumbPlaceholder {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(135deg, #181624 0%, #0d0c14 100%);
+  color: rgba(255, 255, 255, 0.2);
+}
+
+.playingOverlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  display: grid;
+  place-items: center;
+}
+
+.playingBadge {
+  display: flex;
+  align-items: flex-end;
+  gap: 3px;
+  height: 18px;
+  padding: 6px 12px;
+  background: rgba(255, 61, 143, 0.88);
+  border-radius: 999px;
+  box-shadow: 0 0 16px rgba(255, 61, 143, 0.6);
+}
+
+.equalizerBar {
+  width: 3px;
+  background: #fff;
+  border-radius: 2px;
+  animation: eq-bounce 0.8s ease-in-out infinite alternate;
+}
+
+.equalizerBar:nth-child(1) { height: 8px; animation-delay: 0.1s; }
+.equalizerBar:nth-child(2) { height: 16px; animation-delay: 0.3s; }
+.equalizerBar:nth-child(3) { height: 11px; animation-delay: 0.2s; }
+
+@keyframes eq-bounce {
+  0% { transform: scaleY(0.3); }
+  100% { transform: scaleY(1); }
+}
+
+.durationBadge {
+  position: absolute;
+  bottom: 6px;
+  right: 6px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(6px);
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.cardBody {
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.cardTopRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.epNumber {
+  font-size: 12px;
+  font-weight: 750;
+  color: #ff6ba8;
+  letter-spacing: 0.04em;
+}
+
+.epNumberActive {
+  color: #ff3d8f;
+}
+
+.tag {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.epTitle {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #fff;
+  line-height: 1.35;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

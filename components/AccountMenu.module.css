@@ -1,0 +1,77 @@
+/*
+ * This was a transparent 10px outline - the one action a new visitor needs and
+ * it read as disabled. It is now filled and sized like something you press,
+ * with the accent glow giving it weight against the glass header.
+ */
+.signIn {
+  min-height: 38px;
+  padding: 0 18px;
+  border: 0;
+  border-radius: var(--r-full);
+  color: #fff;
+  background-image: linear-gradient(
+    135deg,
+    var(--accent-fill) 0%,
+    color-mix(in oklab, var(--accent-fill) 55%, var(--accent-fill-deep)) 100%
+  );
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.16) inset, 0 6px 18px var(--accent-glow);
+  font-size: var(--t-cap);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  transition: transform var(--fast) var(--ease), box-shadow var(--fast) var(--ease),
+    filter var(--fast) var(--ease);
+}
+.signIn:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.07);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.22) inset, 0 10px 26px var(--accent-glow);
+}
+.signIn:active { transform: translateY(0); }
+
+.account { position: relative; }
+.account summary {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  cursor: pointer;
+  list-style: none;
+}
+.account summary::-webkit-details-marker { display: none; }
+.name { max-width: 90px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: var(--t-micro); color: var(--text-2); }
+
+.menu {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  z-index: 80;
+  width: 240px;
+  padding: 8px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--r-md);
+  background: var(--ink-050);
+  box-shadow: var(--shadow-card);
+}
+.identity { display: flex; align-items: center; gap: 10px; padding: 10px; border-bottom: 1px solid var(--line); margin-bottom: 5px; }
+.identity > span { display: grid; min-width: 0; gap: 2px; }
+.identity b, .identity small { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.identity b { font-size: var(--t-cap); }
+.identity small { color: var(--text-3); font-size: 10px; }
+.menu > a, .menu > button {
+  display: flex;
+  width: 100%;
+  min-height: 38px;
+  align-items: center;
+  padding: 0 10px;
+  border-radius: var(--r-sm);
+  color: var(--text-2);
+  font-size: var(--t-cap);
+  text-align: left;
+}
+.menu > a:hover, .menu > button:hover { background: var(--hover); color: var(--text); }
+
+@media (max-width: 700px) {
+  .name { display: none; }
+  .menu { position: fixed; top: calc(var(--topbar) - 2px); right: var(--gutter); }
+}

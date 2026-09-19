@@ -1,0 +1,43 @@
+{
+  "domain": "anighost.com",
+  "registrar": "Namecheap",
+  "dnsHost": "Namecheap BasicDNS",
+  "capturedAt": "2026-08-25",
+  "nameservers": [
+    "dns1.registrar-servers.com",
+    "dns2.registrar-servers.com"
+  ],
+  "records": [
+    {
+      "type": "A",
+      "host": "@",
+      "value": "216.198.79.1",
+      "ttl": "Automatic",
+      "note": "Vercel's current apex edge. NOT legacy - Vercel's panel lists 76.76.21.21 as the legacy value."
+    },
+    {
+      "type": "CNAME",
+      "host": "www",
+      "value": "3b4476dfdb62e8ff.vercel-dns-017.com.",
+      "ttl": "Automatic",
+      "note": "Project-specific target Vercel recommends. The older cname.vercel-dns.com also works."
+    }
+  ],
+  "email": {
+    "status": "not set up",
+    "note": "MX records deliberately absent. The old mail host went with the cancelled shared hosting."
+  },
+  "vercelZone": {
+    "status": "still present and still correct",
+    "note": "Vercel keeps serving ALIAS records on ns1/ns2.vercel-dns.com. Harmless, and useful while resolvers still hold the old delegation - whichever set they ask, they reach Vercel."
+  },
+  "history": {
+    "2026-08-24": "Nameservers moved to Vercel. Namecheap's orphaned cPanel zone kept answering 198.54.126.124.",
+    "2026-08-25": "Shared hosting cancelled; moved DNS to Namecheap BasicDNS with the records above so both nameserver sets answer correctly."
+  },
+  "canonical": {
+    "primary": "anighost.com",
+    "redirect": "www.anighost.com -> anighost.com (308 Permanent, set in Vercel)",
+    "note": "Matches the canonical tags and sitemap, which both use the apex."
+  }
+}
