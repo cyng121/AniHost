@@ -353,13 +353,9 @@ export async function handleHlsProxy(req: NextRequest, method: "GET" | "HEAD") {
 
   if (!target && b64) {
     try {
-      target = Buffer.from(b64, "base64").toString("utf-8");
+      target = atob(b64);
     } catch {
-      try {
-        target = atob(b64);
-      } catch {
-        target = null;
-      }
+      target = null;
     }
   }
 
@@ -500,7 +496,9 @@ export async function handleHlsProxy(req: NextRequest, method: "GET" | "HEAD") {
 
   // Check if payload is an M3U8 playlist
   const sampleLen = Math.min(buffer.length, 512);
-  const sample = Buffer.from(buffer.subarray(0, sampleLen)).toString("utf-8");
+  const sample = new TextDecoder("utf-8", { fatal: false }).decode(
+    buffer.subarray(0, sampleLen)
+  );
   const isM3U8Content =
     sample.trimStart().startsWith("#EXTM3U") ||
     sample.includes("#EXT-X-") ||
@@ -514,7 +512,7 @@ export async function handleHlsProxy(req: NextRequest, method: "GET" | "HEAD") {
   // 🎬 M3U8 PLAYLIST PROCESSING & REWRITING
   // =========================================
   if (isM3U8Content) {
-    const text = Buffer.from(buffer).toString("utf-8");
+    const text = new TextDecoder("utf-8", { fatal: false }).decode(buffer);
     const baseUrl = new URL(target).href;
     const workerOrigin = "/api/hls";
 

@@ -13,7 +13,8 @@ import { backendGet } from "@/lib/backend";
  * prefix, so this cannot be used as a general-purpose relay.
  */
 
-export const runtime = "nodejs";
+export const runtime = "edge";
+
 
 const ALLOWED_PREFIXES = [
   "zoro",

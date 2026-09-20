@@ -1,24 +1,9 @@
 import type { NextConfig } from "next";
-import path from "path";
 
 const config: NextConfig = {
   reactStrictMode: true,
   // hls.js ships an ESM build that Next.js needs to transpile.
   transpilePackages: ["hls.js"],
-  webpack(webpackConfig) {
-    // Point the dynamic import directly at the pre-built UMD bundle so webpack
-    // never has to resolve the package.json exports map at build time.
-    webpackConfig.resolve.alias["hls.js"] = path.resolve(
-      __dirname,
-      "node_modules/hls.js/dist/hls.min.js",
-    );
-    return webpackConfig;
-  },
-  // Keep prerendering conservative in this OneDrive workspace, where parallel
-  // child processes are considerably more prone to transient filesystem races.
-  experimental: {
-    cpus: 1,
-  },
   images: {
     // Artwork hosts rotate across providers. Images remain unoptimized so the
     // original CDN is used, while the wildcard lets our resilient Image

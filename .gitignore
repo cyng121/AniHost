@@ -11,3 +11,6 @@ next-env.d.ts
 .open-next
 .wrangler
 scratch/
+
+# Cloudflare Pages local dev secrets (never commit real secrets)
+.dev.vars

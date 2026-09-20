@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server";
 import { mangaSearch, mangaCover } from "@/lib/manga";
 
-export const runtime = "nodejs";
+export const runtime = "edge";
 export const dynamic = "force-dynamic";
+
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);

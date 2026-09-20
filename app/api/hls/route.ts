@@ -1,6 +1,10 @@
 import { NextRequest } from "next/server";
 import { getCorsHeaders, handleHlsProxy } from "@/lib/hls-proxy-core";
 
+// Cloudflare Edge Runtime — runs in V8 isolates (no Node.js APIs).
+export const runtime = "edge";
+
+
 // =========================================
 // 🌍 OPTIONS HANDLER (CORS Preflight)
 // =========================================

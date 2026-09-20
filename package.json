@@ -7,8 +7,8 @@
     "build": "next build",
     "start": "next start",
     "typecheck": "tsc --noEmit",
-    "build:cloudflare": "opennextjs-cloudflare build",
-    "deploy:cloudflare": "opennextjs-cloudflare deploy",
+    "build:cloudflare": "npx @cloudflare/next-on-pages",
+    "preview:cloudflare": "wrangler pages dev .vercel/output/static --compatibility-date=2026-09-05 --compatibility-flags=nodejs_compat",
     "deploy:hls": "wrangler deploy --config hls-worker/wrangler.toml"
   },
   "dependencies": {
@@ -18,11 +18,10 @@
     "next": "^15.1.6",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "server-only": "^0.0.1",
-    "sharp": "^0.34.5"
+    "server-only": "^0.0.1"
   },
   "devDependencies": {
-    "@opennextjs/cloudflare": "^1.20.6",
+    "@cloudflare/next-on-pages": "^1",
     "@types/node": "^22.10.5",
     "@types/react": "^19.0.7",
     "@types/react-dom": "^19.0.3",

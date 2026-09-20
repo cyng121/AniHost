@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
-export const runtime = "nodejs";
+export const runtime = "edge";
+
 
 function getBaseUrl(): string {
   const envBase = process.env.ANIGHOST_API_BASE?.trim();
