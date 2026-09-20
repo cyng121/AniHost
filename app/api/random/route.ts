@@ -5,7 +5,9 @@ import { getHomeData } from "@/lib/anilist";
  * "Surprise me" — redirect to a random title from AniList.
  */
 
+export const runtime = "edge";
 export const dynamic = "force-dynamic";
+
 
 export async function GET(request: Request) {
   let home: any = null;
