@@ -1,3 +1,4 @@
+export const runtime = "edge";
 import Link from "next/link";
 import { ExpandableSynopsis } from "@/components/ExpandableSynopsis";
 import { TitleLogo } from "@/components/TitleLogo";

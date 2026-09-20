@@ -1,3 +1,4 @@
+export const runtime = "edge";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { mangaChapters, mangaDetail, mangaPages } from "@/lib/manga";

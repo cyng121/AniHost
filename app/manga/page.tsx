@@ -1,3 +1,4 @@
+export const runtime = "edge";
 import type { Metadata } from "next";
 import { MANGA_SHELVES, mangaHome, mangaSearch, type MangaCard } from "@/lib/manga";
 import { YouTubeMangaCard } from "@/components/YouTubeMangaCard";

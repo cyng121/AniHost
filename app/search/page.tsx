@@ -1,3 +1,4 @@
+export const runtime = "edge";
 import type { Metadata } from "next";
 import { searchAnime, normalizeAnime } from "@/lib/anilist";
 import { YouTubeSearchResults } from "@/components/YouTubeSearchResults";

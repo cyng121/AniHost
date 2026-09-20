@@ -1,3 +1,4 @@
+export const runtime = "edge";
 import type { Metadata } from "next";
 import { getHomeData, getCategory, normalizeAnime } from "@/lib/anilist";
 import { Notice } from "@/components/Notice";

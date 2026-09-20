@@ -1,3 +1,4 @@
+export const runtime = "edge";
 import type { MetadataRoute } from "next";
 import { getHomeData } from "@/lib/anilist";
 import { siteUrl } from "@/lib/site";

@@ -1,3 +1,4 @@
+export const runtime = "edge";
 import type { Metadata } from "next";
 import { getSchedule } from "@/lib/anilist";
 import { fetchAniCoreSchedule, normalizeAniCoreScheduleItem } from "@/lib/anicore-schedule";

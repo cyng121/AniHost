@@ -1,3 +1,4 @@
+export const runtime = "edge";
 import type { Metadata } from "next";
 import { ShortsPlayer, type AnimeShortItem } from "@/components/ShortsPlayer";
 import { fetchAniCoreShorts } from "@/lib/anicore-trailers";
