@@ -1,3 +1,4 @@
+export const runtime = "edge";
 import type { Metadata, Viewport } from "next";
 import { Suspense } from "react";
 import "./globals.css";
@@ -15,8 +16,6 @@ import { PwaRuntime } from "@/components/PwaRuntime";
 // Required by @cloudflare/next-on-pages — all routes must target the
 // Cloudflare Edge Runtime (V8 isolates). Declaring it here propagates to
 // every page and layout nested under this root layout.
-export const runtime = "edge";
-
 const description =
   "Every anime you're chasing, in one place. Sub and dub, simulcast within the hour of Japanese broadcast.";
 // ANIGHOST_API_ORIGIN is the origin the *backend* allowlists, not this site's

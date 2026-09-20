@@ -1,7 +1,6 @@
+export const runtime = "edge";
 import { NextResponse } from "next/server";
 import { mangaSearch, mangaCover } from "@/lib/manga";
-
-export const runtime = "edge";
 export const dynamic = "force-dynamic";
 
 

@@ -1,8 +1,5 @@
-import { NextRequest, NextResponse } from "next/server";
-
 export const runtime = "edge";
-
-
+import { NextRequest, NextResponse } from "next/server";
 function getBaseUrl(): string {
   const envBase = process.env.ANIGHOST_API_BASE?.trim();
   if (

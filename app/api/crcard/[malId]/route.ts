@@ -1,8 +1,5 @@
-import { NextRequest, NextResponse } from "next/server";
-
 export const runtime = "edge";
-
-
+import { NextRequest, NextResponse } from "next/server";
 const UPSTREAM = "https://catalog.animetvplus.site/api/cr/card";
 
 const EMPTY = NextResponse.json(

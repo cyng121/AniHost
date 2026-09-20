@@ -1,9 +1,6 @@
+export const runtime = "edge";
 import { NextResponse } from "next/server";
 import { loadTitle } from "@/lib/catalogue";
-
-export const runtime = "edge";
-
-
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
   const slug = searchParams.get("slug");

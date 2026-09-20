@@ -1,3 +1,4 @@
+export const runtime = "edge";
 import { NextRequest } from "next/server";
 import { backendGet } from "@/lib/backend";
 
@@ -12,10 +13,6 @@ import { backendGet } from "@/lib/backend";
  * Only GET is forwarded, and only to paths that begin with a known provider
  * prefix, so this cannot be used as a general-purpose relay.
  */
-
-export const runtime = "edge";
-
-
 const ALLOWED_PREFIXES = [
   "zoro",
   "anidao",

@@ -1,6 +1,5 @@
-export const runtime = "edge";
 "use client";
-
+export const runtime = "edge";
 import type { User } from "@supabase/supabase-js";
 import Link from "next/link";
 import { useEffect, useState, type FormEvent } from "react";

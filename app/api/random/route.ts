@@ -1,11 +1,10 @@
+export const runtime = "edge";
 import { NextResponse } from "next/server";
 import { getHomeData } from "@/lib/anilist";
 
 /**
  * "Surprise me" — redirect to a random title from AniList.
  */
-
-export const runtime = "edge";
 export const dynamic = "force-dynamic";
 
 

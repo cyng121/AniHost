@@ -1,7 +1,6 @@
+export const runtime = "edge";
 import { NextResponse } from "next/server";
 import { fetchAniCoreShorts } from "@/lib/anicore-trailers";
-
-export const runtime = "edge";
 export const dynamic = "force-dynamic";
 
 

@@ -1,6 +1,5 @@
-export const runtime = "edge";
 "use client";
-
+export const runtime = "edge";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { clearSaves, listSaves, onSavesChange, removeSave, type SavedItem } from "@/lib/saves";
