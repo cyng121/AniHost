@@ -7,25 +7,31 @@
     "build": "next build",
     "start": "next start",
     "typecheck": "tsc --noEmit",
+    "lint": "eslint app components lib next.config.ts",
     "build:cloudflare": "npx @cloudflare/next-on-pages",
     "preview:cloudflare": "wrangler pages dev .vercel/output/static --compatibility-date=2026-09-05 --compatibility-flags=nodejs_compat",
+    "deploy:pages": "wrangler pages deploy .vercel/output/static",
     "deploy:hls": "wrangler deploy --config hls-worker/wrangler.toml"
   },
   "dependencies": {
     "@supabase/supabase-js": "2.112.4",
     "hls.js": "^1.7.1",
     "lucide-react": "^1.41.0",
-    "next": "^15.1.6",
+    "next": "15.5.2",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "server-only": "^0.0.1"
   },
   "devDependencies": {
-    "@cloudflare/next-on-pages": "^1",
+    "@cloudflare/next-on-pages": "^1.13.8",
     "@types/node": "^22.10.5",
     "@types/react": "^19.0.7",
     "@types/react-dom": "^19.0.3",
+    "eslint": "^9.18.0",
+    "eslint-config-next": "15.5.2",
+    "eslint-plugin-next-on-pages": "^1.13.8",
     "typescript": "^5.7.3",
+    "vercel": "47.0.4",
     "wrangler": "^4.129.0"
   }
 }

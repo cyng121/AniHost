@@ -39,6 +39,12 @@ export const metadata: Metadata = {
     title: "Ani Ghost",
     description,
   },
+  // icon.png and apple-icon.png live in public/ rather than app/: metadata
+  // image files in app/ build as Node.js route handlers (they stream the file
+  // through Buffer), which Cloudflare Pages cannot run. Declared here so the
+  // <link rel="icon"> / <link rel="apple-touch-icon"> tags are still injected,
+  // pointing at static assets.
+  icons: { icon: "/icon.png", apple: "/apple-icon.png" },
   twitter: {
     card: "summary",
     title: "Ani Ghost",

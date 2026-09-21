@@ -226,8 +226,10 @@ export function Header() {
             onKeyDown={onSearchKeyDown}
             placeholder={scopePlaceholder(scope)}
             aria-label="Search"
+            role="combobox"
             aria-autocomplete="list"
             aria-expanded={suggestOpen && q.trim().length > 1}
+            aria-controls={suggestOpen ? "search-suggest" : undefined}
             autoComplete="off"
           />
           <span className="search__k" aria-hidden>/</span>

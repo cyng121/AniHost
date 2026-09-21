@@ -3,7 +3,6 @@
 import { useCallback, useEffect, useRef, useState, type CSSProperties } from "react";
 import { BeatLoader } from "./BeatLoader";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type HlsInstance = any;
 
 export interface AudioOption {
@@ -567,7 +566,10 @@ export function Player({
     };
     // retryTick intentionally re-runs this whole effect so a failed source
     // gets a clean reconnect rather than reusing a dead hls.js instance.
-  }, [src, retryTick]);
+    // audio/provider are real inputs: the manifest handler below picks the
+    // default track from them, and changing either one re-resolves the stream
+    // upstream, so this effect must not keep a stale copy.
+  }, [src, retryTick, audio, provider]);
 
   const retry = useCallback(() => {
     setRetrying(true);

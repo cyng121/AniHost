@@ -241,17 +241,45 @@ visible on the page.
 
 ## Deployment
 
-The project is connected to the git repository. Pushing to `main` builds
-and promotes to production at anighost.com; every other branch and pull request
-gets its own preview URL. Nothing needs to be run by hand.
+The app targets **Cloudflare Pages**, built with `@cloudflare/next-on-pages`.
+Every server route runs on the Edge runtime — the adapter supports nothing
+else — so every page and API route exports `export const runtime = "edge"`.
+The `eslint-plugin-next-on-pages` rules are wired into `npm run lint`, so a
+route that regresses to the Node runtime, or an unsupported `next.config`
+option, fails lint before it fails a deploy.
 
-Root Directory is `.` — the repository root is the Next app.
+Local build and preview:
 
-Environment variables live in the Vercel project, not in the repository. Only
-`.env.example` is tracked, and it carries names and explanations, never values.
-`ANIGHOST_SITE_ORIGIN` is deliberately left blank there: Vercel supplies the
-production domain at build time, so previews resolve canonical URLs to the real
-site rather than naming themselves.
+```bash
+npm run build:cloudflare       # next-on-pages → .vercel/output/static
+npm run preview:cloudflare     # wrangler pages dev on that output
+```
+
+Real deploys run on Cloudflare's build runners through the Git integration,
+never on a local machine: the Pages project uses build command
+`npx @cloudflare/next-on-pages@1`, output directory `.vercel/output/static`,
+and the `nodejs_compat` compatibility flag for both production and preview.
+Pushing to `main` builds and promotes production; every other branch gets its
+own preview URL.
+
+A few pins exist on purpose. `next` is pinned to `15.5.2` — the highest version
+the adapter's peer range accepts. The `vercel` CLI is a dev dependency because
+the adapter shells out to `vercel build`. And the icons live in `public/`
+rather than `app/`: metadata image files under `app/` build as Node.js route
+handlers (they stream the file through `Buffer`), which Pages cannot run, so
+the layout declares them through `metadata.icons` instead.
+
+One local-only caveat: building on Windows needs a patch, because Windows
+without Developer Mode cannot create the symlinks the Vercel CLI uses to
+deduplicate identical functions, and the build dies with `EPERM ... symlink`.
+`node_modules/vercel/dist/index.js` has `writeFunctionSymlink` wrapped so a
+denied symlink falls back to writing that function out in full — identical
+output for Pages, just larger. Cloudflare's Linux build runners never need it.
+
+Environment variables live in the Pages project's settings, not the repository.
+Only `.env.example` is tracked, and it carries names and explanations, never
+values. Set `ANIGHOST_SITE_ORIGIN` to the production origin explicitly — Pages
+previews do not infer it the way a Vercel deployment would.
 
 One variable is required in production and easy to miss —
 `ANIGHOST_PROXY_SECRET`. It signs every `/api/hls` link. Without it the stream

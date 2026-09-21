@@ -250,7 +250,7 @@ export function SuggestPanel({
         </div>
       ) : null}
 
-      <div role="listbox" aria-label={`${scopeLabel(scope)} suggestions`}>
+      <div id="search-suggest" role="listbox" aria-label={`${scopeLabel(scope)} suggestions`}>
         {items.map((item, n) => (
         <Link
           key={item.id}

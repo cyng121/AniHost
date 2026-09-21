@@ -158,7 +158,7 @@ export function InfiniteVideoGrid({
 
       {!hasNextPage && items.length > 0 && (
         <div className="yt-infinite-status">
-          <span className="yt-infinite-msg">You've reached the end</span>
+          <span className="yt-infinite-msg">You&apos;ve reached the end</span>
         </div>
       )}
     </div>

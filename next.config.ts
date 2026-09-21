@@ -1,7 +1,6 @@
 import type { NextConfig } from "next";
 
 const config: NextConfig = {
-  reactStrictMode: true,
   // hls.js ships an ESM build that Next.js needs to transpile.
   transpilePackages: ["hls.js"],
   images: {
