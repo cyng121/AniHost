@@ -79,7 +79,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           rel="stylesheet"
           href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap"
         />
-       <script defer src="https://cloud.umami.is/script.js" data-website-id="21fb4b57-2b65-43fe-b5d1-c5e3c956381f"></script>
+        <script defer src="https://cloud.umami.is/script.js" data-website-id="6d1f045e-b4d5-47d1-986c-602dff80e8ea"></script>
       </head>
       <body>
         <Suspense fallback={null}>
