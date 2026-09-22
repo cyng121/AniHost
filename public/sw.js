@@ -1,5 +1,5 @@
-const CACHE_NAME = "ani-ghost-shell-v2";
-const APP_SHELL = ["/browse", "/search", "/saves", "/apps", "/brand/ani-ghost-compact.png"];
+const CACHE_NAME = "ani-ghost-shell-v3";
+const APP_SHELL = ["/browse", "/brand/ani-ghost-compact.png"];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
@@ -25,6 +25,18 @@ self.addEventListener("fetch", (event) => {
   const requestUrl = new URL(event.request.url);
   if (requestUrl.origin !== self.location.origin) return;
 
+  // Never cache RSC payloads, API calls, or search queries
+  if (
+    requestUrl.searchParams.has("_rsc") ||
+    requestUrl.searchParams.has("q") ||
+    requestUrl.pathname.startsWith("/api/") ||
+    requestUrl.pathname.startsWith("/anime/") ||
+    requestUrl.pathname.startsWith("/watch/")
+  ) {
+    event.respondWith(fetch(event.request));
+    return;
+  }
+
   if (event.request.mode === "navigate") {
     event.respondWith(
       fetch(event.request).catch(async () => {
@@ -35,19 +47,20 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
+  // Network-first with cache fallback for static assets
   event.respondWith(
-    caches.match(event.request).then((cached) => {
-      const fresh = fetch(event.request)
-        .then((response) => {
-          if (response.ok) {
-            const copy = response.clone();
-            void caches.open(CACHE_NAME).then((cache) => cache.put(event.request, copy));
-          }
-          return response;
-        })
-        .catch(() => cached);
-      return cached || fresh;
-    }),
+    fetch(event.request)
+      .then((response) => {
+        if (response.ok && response.type === "basic") {
+          const copy = response.clone();
+          void caches.open(CACHE_NAME).then((cache) => cache.put(event.request, copy));
+        }
+        return response;
+      })
+      .catch(async () => {
+        const match = await caches.match(event.request);
+        return match || offlinePage();
+      }),
   );
 });
 
