@@ -8,6 +8,7 @@
  */
 
 import { useState, useEffect } from "react";
+import { fetchCatalogEpisodes, CatalogEpisode } from "@/lib/catalog";
 
 export interface AnimeTVEpisodeItem {
   ep: number;
@@ -16,12 +17,13 @@ export interface AnimeTVEpisodeItem {
   has_stream?: boolean;
 }
 
-const API_BASE = "https://catalog.animetvplus.site/api/episodes";
-
-// Module-level memory cache keyed by anime ID string
+// Module-level memory cache keyed by anime ID string & season
 const _epCache = new Map<string, Record<number, AnimeTVEpisodeItem>>();
 
-export function useAnimeTVEpisodes(id?: number | string | null): {
+export function useAnimeTVEpisodes(
+  id?: number | string | null,
+  crSeasonId?: string
+): {
   episodesMap: Record<number, AnimeTVEpisodeItem>;
   loading: boolean;
 } {
@@ -35,10 +37,10 @@ export function useAnimeTVEpisodes(id?: number | string | null): {
       return;
     }
 
-    const key = String(id);
+    const cacheKey = crSeasonId ? `${id}:${crSeasonId}` : String(id);
 
-    if (_epCache.has(key)) {
-      setEpisodesMap(_epCache.get(key)!);
+    if (_epCache.has(cacheKey)) {
+      setEpisodesMap(_epCache.get(cacheKey)!);
       setLoading(false);
       return;
     }
@@ -46,38 +48,32 @@ export function useAnimeTVEpisodes(id?: number | string | null): {
     let cancelled = false;
     setLoading(true);
 
-    async function fetchEpisodes() {
+    async function loadEpisodes() {
       try {
-        const res = await fetch(`${API_BASE}/${key}?v=v2-cache-guard`);
-        if (!res.ok) {
-          _epCache.set(key, {});
-          if (!cancelled) {
-            setEpisodesMap({});
-            setLoading(false);
-          }
-          return;
-        }
-
-        const data = await res.json();
-        const items: AnimeTVEpisodeItem[] = Array.isArray(data)
-          ? data
-          : data.items || data.episodes || [];
+        const items: CatalogEpisode[] = await fetchCatalogEpisodes(id!, {
+          cr_season_id: crSeasonId,
+        });
 
         const map: Record<number, AnimeTVEpisodeItem> = {};
         for (const item of items) {
           if (item && typeof item.ep === "number") {
-            map[item.ep] = item;
+            map[item.ep] = {
+              ep: item.ep,
+              title: item.title,
+              thumbnail: item.thumbnail,
+              has_stream: item.has_stream,
+            };
           }
         }
 
-        _epCache.set(key, map);
+        _epCache.set(cacheKey, map);
 
         if (!cancelled) {
           setEpisodesMap(map);
           setLoading(false);
         }
       } catch {
-        _epCache.set(key, {});
+        _epCache.set(cacheKey, {});
         if (!cancelled) {
           setEpisodesMap({});
           setLoading(false);
@@ -85,12 +81,12 @@ export function useAnimeTVEpisodes(id?: number | string | null): {
       }
     }
 
-    fetchEpisodes();
+    loadEpisodes();
 
     return () => {
       cancelled = true;
     };
-  }, [id]);
+  }, [id, crSeasonId]);
 
   return { episodesMap, loading };
 }

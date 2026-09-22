@@ -7,48 +7,16 @@
  */
 
 import { useState, useEffect } from "react";
+import { fetchCatalogSearch, CatalogAnimeItem } from "@/lib/catalog";
 
-export interface AnimeTVSearchItem {
-  mal_id: string;
-  anilist_id?: number;
-  canonical_mal_id?: string;
-  canonical_title: string;
-  english_title?: string;
-  romaji_title?: string;
-  native_title?: string;
-  cover_image?: string;
-  cr_poster?: string;
-  cr_hero?: string;
-  detail_banner?: string;
-  title_logo?: string;
-  banner_image?: string;
-  thumbnail_1080_url?: string;
-  genres_json?: string;
-  format?: string;
-  status?: string;
-  current_episodes?: number;
-  m3u8_episode_count?: number;
-}
-
-const SEARCH_API = "https://catalog.animetvplus.site/api/search";
+export type AnimeTVSearchItem = CatalogAnimeItem;
 
 export async function searchAnimeTVPlus(
   query: string,
   limit = 20,
   page = 1
 ): Promise<AnimeTVSearchItem[]> {
-  if (!query || !query.trim()) return [];
-
-  try {
-    const url = `${SEARCH_API}?q=${encodeURIComponent(query.trim())}&limit=${limit}&page=${page}`;
-    const res = await fetch(url);
-    if (!res.ok) return [];
-
-    const data = await res.json();
-    return data.items || [];
-  } catch {
-    return [];
-  }
+  return fetchCatalogSearch(query, { limit, page });
 }
 
 export function useAnimeTVSearch(query?: string | null, limit = 20): {

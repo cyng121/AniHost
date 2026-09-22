@@ -11,7 +11,7 @@ import { YouTubeChannelView } from "@/components/YouTubeChannelView";
 export const revalidate = 1800;
 
 type Params = { slug: string };
-type Search = { audio?: string };
+type Search = { audio?: string; season?: string };
 
 export async function generateMetadata({
   params,

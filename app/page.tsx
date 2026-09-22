@@ -7,6 +7,26 @@ import { YouTubeFilterBar } from "@/components/YouTubeFilterBar";
 import { YouTubeVideoCard } from "@/components/YouTubeVideoCard";
 import { InfiniteVideoGrid } from "@/components/InfiniteVideoGrid";
 import type { ZoroCard } from "@/lib/types";
+import { fetchAiringAnime, CatalogAnimeItem } from "@/lib/catalog";
+
+function catalogItemToCard(item: CatalogAnimeItem): ZoroCard {
+  const posterImg = item.cr_poster || item.cover_image || "";
+  const bannerImg = item.detail_banner || item.cr_hero || item.banner_image || posterImg;
+  return {
+    id: String(item.mal_id),
+    title: item.canonical_title || item.english_title || item.romaji_title || "Anime",
+    slug: String(item.mal_id),
+    image: posterImg,
+    poster: posterImg,
+    bannerImage: bannerImg,
+    banner: bannerImg,
+    type: item.format || "TV",
+    subCount: item.current_episodes || item.m3u8_episode_count || undefined,
+    totalEpisodes: item.current_episodes || item.m3u8_episode_count || undefined,
+    score: item.score ?? null,
+    status: item.status || "Releasing",
+  };
+}
 
 export const metadata: Metadata = {
   title: "Home · Ani Ghost",
@@ -85,6 +105,17 @@ export default async function HomePage({ searchParams }: HomePageProps) {
   const allTimeBest: ZoroCard[] = (home?.allTimeBest?.media ?? []).map(normalizeAnime);
   const hiddenGems: ZoroCard[] = (home?.hiddenGems?.media ?? []).map(normalizeAnime);
   const upcomingAnime: ZoroCard[] = (home?.upcomingAnime?.media ?? []).map(normalizeAnime);
+
+  // Currently Airing Anime from catalog.animetvplus.site
+  let currentlyAiring: ZoroCard[] = [];
+  try {
+    const airingList = await fetchAiringAnime();
+    if (Array.isArray(airingList) && airingList.length > 0) {
+      currentlyAiring = airingList.map(catalogItemToCard);
+    }
+  } catch {
+    // Fallback if catalog call fails
+  }
 
   return (
     <div>
@@ -214,6 +245,22 @@ export default async function HomePage({ searchParams }: HomePageProps) {
                       key={`soon-${item.slug}`}
                       item={item}
                       badge="UPCOMING"
+                    />
+                  ))}
+                </div>
+              </section>
+            ) : null}
+
+            {/* 9. Currently Airing (from catalog.animetvplus.site) */}
+            {currentlyAiring.length > 0 ? (
+              <section className="yt-home-section">
+                <h2 className="yt-section-title">Currently Airing</h2>
+                <div className="yt-grid">
+                  {currentlyAiring.map((item) => (
+                    <YouTubeVideoCard
+                      key={`airing-${item.slug}`}
+                      item={item}
+                      badge="AIRING"
                     />
                   ))}
                 </div>

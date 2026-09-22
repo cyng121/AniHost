@@ -306,6 +306,41 @@ export async function loadTitle(slug: string): Promise<TitleResult> {
           }
         }
 
+        // Enrich or replace with full catalog episode dataset if catalog has more episodes
+        try {
+          const { fetchCatalogEpisodes } = await import("./catalog");
+          const catalogEps = await fetchCatalogEpisodes(targetEpisodeId);
+          if (catalogEps && catalogEps.length > 0) {
+            if (!inline.length || catalogEps.length > inline.length) {
+              inline = catalogEps.map((item, idx) => ({
+                number: Number(item.ep ?? idx + 1),
+                slug: String(item.ep ?? idx + 1),
+                title: item.title || `Episode ${item.ep ?? idx + 1}`,
+                description: undefined,
+                thumbnail: item.thumbnail || info.image,
+                ids: "",
+                sub: true,
+                dub: true,
+              }));
+            } else {
+              const catMap = new Map<number, (typeof catalogEps)[0]>();
+              for (const ce of catalogEps) {
+                if (typeof ce.ep === "number") catMap.set(ce.ep, ce);
+              }
+              inline = inline.map((ep) => {
+                const cat = catMap.get(ep.number);
+                return {
+                  ...ep,
+                  title: (ep.title?.startsWith("Episode ") && cat?.title ? cat.title : (ep.title || cat?.title)) || `Episode ${ep.number}`,
+                  thumbnail: cat?.thumbnail || ep.thumbnail || info.image,
+                };
+              });
+            }
+          }
+        } catch {
+          // Ignore catalog fallback error
+        }
+
         if (seasonsRes && seasonsRes.ok && Array.isArray(seasonsRes.data) && seasonsRes.data.length > 0) {
           info.seasons = seasonsRes.data.map((s, idx) => ({
             id: s.id ?? s.data_id ?? idx + 1,

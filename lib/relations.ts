@@ -337,7 +337,7 @@ export async function findAnimeFranchiseData(
       }
     }
   } catch {
-    // Ignore
+    // Ignore AniList error
   }
 
   return {

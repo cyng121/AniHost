@@ -563,13 +563,13 @@ export function YouTubeChannelView({
                     </div>
                   </div>
                 ))
-              ) : visibleEpisodes.map((ep) => {
+              ) : visibleEpisodes.map((ep, epIdx) => {
                 const epThumb = crEpMap[ep.number]?.thumbnail || ep.thumbnail || currentSeason?.cover || currentSeason?.banner || bannerSrc;
                 const epTitle = crEpMap[ep.number]?.title || ep.title || `Episode ${ep.number}`;
 
                 return (
                   <Link
-                    key={ep.slug || ep.number}
+                    key={ep.ids ? `ep-${ep.ids}-${ep.number}-${epIdx}` : `ep-${ep.number}-${ep.slug || ""}-${epIdx}`}
                     href={
                       baseWatchPath
                         ? `${baseWatchPath}/${encodeURIComponent(ep.ids || ep.slug || `${currentSlug}-${ep.number}`)}`

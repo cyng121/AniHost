@@ -13,19 +13,9 @@
  */
 
 import { useState, useEffect } from "react";
+import { fetchCrCard, CatalogCrCard } from "@/lib/catalog";
 
-// Direct request to catalog.animetvplus.site endpoint with fallback to local proxy
-const CATALOG_API = "https://catalog.animetvplus.site/api/cr/card";
 const PROXY_API = "/api/crcard";
-
-interface CrCardResponse {
-  mal_id?: string | number;
-  has_cr?: number;
-  detail_banner?: string | null;
-  hero_banner?: string | null;
-  title_logo?: string | null;
-  poster?: string | null;
-}
 
 // Module-level memory cache keyed by mal_id string
 const _cache = new Map<string, {
@@ -35,7 +25,7 @@ const _cache = new Map<string, {
   poster: string | null;
 }>();
 
-async function fetchCrCard(
+async function getCrCardAssets(
   malId: number | string
 ): Promise<{ detailBanner: string | null; heroBanner: string | null; titleLogo: string | null; poster: string | null }> {
   const key = String(malId);
@@ -47,23 +37,21 @@ async function fetchCrCard(
   const NULL_RESULT = { detailBanner: null, heroBanner: null, titleLogo: null, poster: null };
 
   try {
-    // 1. Try direct fetch from catalog.animetvplus.site for fastest response
-    let res = await fetch(`${CATALOG_API}/${key}`);
+    let data: CatalogCrCard | null = await fetchCrCard(malId, false);
 
-    // Fallback to local proxy if direct response was not ok
-    if (!res.ok) {
-      res = await fetch(`${PROXY_API}/${key}`);
+    // Fallback to local proxy if direct response was null
+    if (!data) {
+      try {
+        const res = await fetch(`${PROXY_API}/${key}`);
+        if (res.ok) {
+          data = await res.json();
+        }
+      } catch {
+        // Ignore
+      }
     }
 
-    if (!res.ok) {
-      _cache.set(key, NULL_RESULT);
-      return NULL_RESULT;
-    }
-
-    let data: CrCardResponse;
-    try {
-      data = await res.json();
-    } catch {
+    if (!data) {
       _cache.set(key, NULL_RESULT);
       return NULL_RESULT;
     }
@@ -78,24 +66,6 @@ async function fetchCrCard(
     _cache.set(key, result);
     return result;
   } catch {
-    // 2. If direct fetch threw network/CORS error, try local proxy
-    try {
-      const res = await fetch(`${PROXY_API}/${key}`);
-      if (res.ok) {
-        const data: CrCardResponse = await res.json();
-        const result = {
-          detailBanner: data.detail_banner || null,
-          heroBanner: data.hero_banner || null,
-          titleLogo: data.title_logo || null,
-          poster: data.poster || null,
-        };
-        _cache.set(key, result);
-        return result;
-      }
-    } catch {
-      // Ignore
-    }
-
     _cache.set(key, NULL_RESULT);
     return NULL_RESULT;
   }
@@ -153,7 +123,7 @@ export function useCrunchyrollBanner(malId?: number | string | null): CrBannerAs
 
     let cancelled = false;
 
-    fetchCrCard(malId).then((result) => {
+    getCrCardAssets(malId).then((result) => {
       if (!cancelled) {
         setDetailBanner(result.detailBanner);
         setHeroBanner(result.heroBanner);

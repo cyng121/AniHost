@@ -826,7 +826,7 @@ export function YouTubeWatchView({
               </div>
             ))
           ) : filteredEpisodes.length ? (
-            filteredEpisodes.map((ep) => {
+            filteredEpisodes.map((ep, epIdx) => {
               const isCurrent =
                 (ep.number === episodeNumber || (ep.ids && ep.ids === initialSlug) || (ep.slug && ep.slug === initialSlug)) &&
                 (sidebarSlug === initialSlug || effectiveSeasons.length <= 1);
@@ -845,7 +845,7 @@ export function YouTubeWatchView({
 
               return (
                 <Link
-                  key={ep.slug || ep.number}
+                  key={ep.ids ? `watch-ep-${ep.ids}-${ep.number}-${epIdx}` : `watch-ep-${ep.number}-${ep.slug || ""}-${epIdx}`}
                   ref={isCurrent ? activeCardRef : undefined}
                   href={epHref}
                   className={`yt-up-next-card ${isCurrent ? "is-active" : ""}`}
