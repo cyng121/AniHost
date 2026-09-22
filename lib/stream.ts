@@ -25,6 +25,7 @@ type Options = {
   provider: string;
   anilistId?: string | null;
   episodeNumber: number;
+  relativeEpisodeNumber?: number;
 };
 
 const asRecord = (value: unknown): Record<string, unknown> =>
@@ -48,7 +49,7 @@ function text(record: Record<string, unknown>, ...keys: string[]): string {
 
 function serverName(value: unknown): string {
   const item = asRecord(value);
-  return text(item, "serverName", "server_name", "name", "server", "title");
+  return text(item, "name", "server", "serverName");
 }
 
 function serverId(value: unknown): string {
@@ -158,20 +159,85 @@ function parseStream(value: unknown, audio: "sub" | "dub", selectedServer: strin
   };
 }
 
-async function fetchEpisode(options: Options): Promise<Result<unknown>> {
-  const { provider, anilistId, episodeNumber } = options;
-  if (!anilistId) return { ok: false, status: 400, error: "This episode has no provider id." };
-  if (provider === "aniwave") return api.aniwaveAnilist(anilistId, episodeNumber);
-  if (provider === "anidao") return api.anidaoAnilist(anilistId, episodeNumber);
-  if (provider === "watchanimeworld") return api.watchanimeworldAnilist(anilistId, episodeNumber);
-  if (provider === "hindi" || provider === "animesalt") return api.animesaltAnilist(anilistId, episodeNumber);
-  return api.zoroAnilist(anilistId, episodeNumber);
+async function fetchEpisode(options: Options): Promise<{ res: Result<unknown>; usedProvider: string }> {
+  const { provider, anilistId, episodeNumber, relativeEpisodeNumber } = options;
+  if (!anilistId) return { res: { ok: false, status: 400, error: "This episode has no provider id." }, usedProvider: provider };
+
+  const callProvider = (prov: string, ep: number) => {
+    if (prov === "aniwave") return api.aniwaveAnilist(anilistId, ep);
+    if (prov === "anidao") return api.anidaoAnilist(anilistId, ep);
+    if (prov === "watchanimeworld") return api.watchanimeworldAnilist(anilistId, ep);
+    if (prov === "hindi" || prov === "animesalt") return api.animesaltAnilist(anilistId, ep);
+    if (prov === "toons") return api.toonsAnilist(anilistId, ep);
+    return api.zoroAnilist(anilistId, ep);
+  };
+
+  // 1. Try with requested provider and episodeNumber
+  let res = await callProvider(provider, episodeNumber);
+
+  // 2. If cumulative episode number (e.g. 59) returns 404 and relative episode number (e.g. 12) is different, try relative
+  if (!res.ok && relativeEpisodeNumber && relativeEpisodeNumber !== episodeNumber) {
+    res = await callProvider(provider, relativeEpisodeNumber);
+  }
+
+  if (res.ok) {
+    return { res, usedProvider: provider };
+  }
+
+  // 3. Fallback: If requested provider failed, try primary provider ("zoro")
+  if (provider !== "zoro") {
+    let fallbackRes = await callProvider("zoro", episodeNumber);
+    if (!fallbackRes.ok && relativeEpisodeNumber && relativeEpisodeNumber !== episodeNumber) {
+      fallbackRes = await callProvider("zoro", relativeEpisodeNumber);
+    }
+    if (fallbackRes.ok) {
+      return { res: fallbackRes, usedProvider: "zoro" };
+    }
+  }
+
+  return { res, usedProvider: provider };
 }
 
 export async function resolveStream(ids: string, options: Options): Promise<StreamResult> {
-  const episode = await fetchEpisode(options);
+  const { res: episode, usedProvider } = await fetchEpisode(options);
   if (!episode.ok) return { stream: null, available: { sub: [], dub: [] }, error: episode.error };
   const root = unwrap(episode.data);
+
+  // Direct payload handling (e.g. watchanimeworld, animesalt, toons which return m3u8 or iframe directly)
+  const directM3u8 = text(root, "m3u8", "file", "stream", "fileUrl", "src");
+  const directIframe = text(root, "iframe", "url");
+  const directUrl = directM3u8 || (directIframe && /^https?:\/\//i.test(directIframe) ? directIframe : "");
+
+  if (directUrl && /^https?:\/\//i.test(directUrl)) {
+    const srvName =
+      usedProvider === "watchanimeworld"
+        ? "WatchAnimeWorld (Hindi)"
+        : usedProvider === "animesalt"
+        ? "AnimeSalt (Hindi)"
+        : usedProvider === "toons"
+        ? "ToonStream (Hindi)"
+        : text(root, "serverName", "server", "name") || "Default";
+
+    const audioTrack = options.audio;
+    return {
+      stream: {
+        url: directUrl,
+        audio: audioTrack,
+        serverName: srvName,
+        referer: text(root, "referer") || originOf(directUrl) || undefined,
+        subtitles: list(root.subtitles ?? root.tracks).map(parseTrack).filter(Boolean) as StreamSubtitle[],
+      },
+      available: {
+        sub: audioTrack === "sub" ? [srvName] : ["Default"],
+        dub: audioTrack === "dub" ? [srvName] : [srvName],
+      },
+      episodeMeta: {
+        title: text(root, "title", "episodeTitle"),
+        thumbnail: text(root, "thumbnail", "image", "img") || undefined,
+      },
+    };
+  }
+
   const servers = collectServers(root, episode.data);
 
   // Availability is only claimed for an audio track the payload actually

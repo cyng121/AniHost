@@ -118,6 +118,7 @@ export default async function WatchPage({
     provider,
     anilistId: effectiveAnilistId,
     episodeNumber: current.number,
+    relativeEpisodeNumber: idx + 1,
   });
 
   const servers = available[stream?.audio ?? audio] ?? [];

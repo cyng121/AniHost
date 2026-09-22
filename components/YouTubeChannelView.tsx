@@ -7,6 +7,7 @@ import type { ZoroEpisode, ZoroInfo } from "@/lib/types";
 import type { AnimeSeason, AnimeCharacter, AnimeRecommendation, AnimeTrailer } from "@/lib/relations";
 import { useBannerAssets } from "@/hooks/useBannerAssets";
 import { useCrunchyrollBanner } from "@/hooks/useCrunchyrollBanner";
+import { useAnimeTVEpisodes } from "@/hooks/useAnimeTVEpisodes";
 import { SaveButton } from "./SaveButton";
 
 import { fetchAniCoreTrailerForAnime } from "@/lib/anicore-trailers";
@@ -22,6 +23,7 @@ interface YouTubeChannelViewProps {
   recommendations?: AnimeRecommendation[];
   trailer?: AnimeTrailer | null;
   audio?: "sub" | "dub";
+  baseWatchPath?: string;
 }
 
 type Tab = "home" | "seasons" | "characters" | "recommended" | "about";
@@ -39,6 +41,7 @@ export function YouTubeChannelView({
   recommendations = [],
   trailer: initialTrailer = null,
   audio = "sub",
+  baseWatchPath,
 }: YouTubeChannelViewProps) {
   const [activeTab, setActiveTab] = useState<Tab>("home");
   const [subscribed, setSubscribed] = useState(false);
@@ -98,6 +101,9 @@ export function YouTubeChannelView({
     poster: crPoster,
     loaded: crLoaded,
   } = useCrunchyrollBanner(currentInfo.malId);
+
+  // Crunchyroll episode thumbnails directly from AniMeTVPlus API
+  const { episodesMap: crEpMap } = useAnimeTVEpisodes(currentInfo.malId || anilistIdVal);
 
   // Range chunking for episodes
   const [activeRangeIndex, setActiveRangeIndex] = useState(0);
@@ -558,13 +564,17 @@ export function YouTubeChannelView({
                   </div>
                 ))
               ) : visibleEpisodes.map((ep) => {
-                const epThumb = ep.thumbnail || currentSeason?.cover || currentSeason?.banner || bannerSrc;
-                const epTitle = ep.title || `Episode ${ep.number}`;
+                const epThumb = crEpMap[ep.number]?.thumbnail || ep.thumbnail || currentSeason?.cover || currentSeason?.banner || bannerSrc;
+                const epTitle = crEpMap[ep.number]?.title || ep.title || `Episode ${ep.number}`;
 
                 return (
                   <Link
                     key={ep.slug || ep.number}
-                    href={`/watch/${encodeURIComponent(currentSlug)}/${ep.number}`}
+                    href={
+                      baseWatchPath
+                        ? `${baseWatchPath}/${encodeURIComponent(ep.ids || ep.slug || `${currentSlug}-${ep.number}`)}`
+                        : `/watch/${encodeURIComponent(currentSlug)}/${ep.number}`
+                    }
                     className="yt-card yt-card--episode"
                   >
                     <div className="yt-card__thumb-box">

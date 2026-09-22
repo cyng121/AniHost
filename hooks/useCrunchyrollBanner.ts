@@ -14,8 +14,9 @@
 
 import { useState, useEffect } from "react";
 
-// Use local Next.js proxy to avoid CORS / 403 when fetching from the browser
-const CATALOG_API = "/api/crcard";
+// Direct request to catalog.animetvplus.site endpoint with fallback to local proxy
+const CATALOG_API = "https://catalog.animetvplus.site/api/cr/card";
+const PROXY_API = "/api/crcard";
 
 interface CrCardResponse {
   mal_id?: string | number;
@@ -43,16 +44,21 @@ async function fetchCrCard(
     return _cache.get(key)!;
   }
 
-  try {
-    const res = await fetch(`${CATALOG_API}/${key}`);
+  const NULL_RESULT = { detailBanner: null, heroBanner: null, titleLogo: null, poster: null };
 
+  try {
+    // 1. Try direct fetch from catalog.animetvplus.site for fastest response
+    let res = await fetch(`${CATALOG_API}/${key}`);
+
+    // Fallback to local proxy if direct response was not ok
     if (!res.ok) {
-      const result = { detailBanner: null, heroBanner: null, titleLogo: null, poster: null };
-      _cache.set(key, result);
-      return result;
+      res = await fetch(`${PROXY_API}/${key}`);
     }
 
-    const NULL_RESULT = { detailBanner: null, heroBanner: null, titleLogo: null, poster: null };
+    if (!res.ok) {
+      _cache.set(key, NULL_RESULT);
+      return NULL_RESULT;
+    }
 
     let data: CrCardResponse;
     try {
@@ -72,9 +78,26 @@ async function fetchCrCard(
     _cache.set(key, result);
     return result;
   } catch {
-    const result = { detailBanner: null, heroBanner: null, titleLogo: null, poster: null };
-    _cache.set(key, result);
-    return result;
+    // 2. If direct fetch threw network/CORS error, try local proxy
+    try {
+      const res = await fetch(`${PROXY_API}/${key}`);
+      if (res.ok) {
+        const data: CrCardResponse = await res.json();
+        const result = {
+          detailBanner: data.detail_banner || null,
+          heroBanner: data.hero_banner || null,
+          titleLogo: data.title_logo || null,
+          poster: data.poster || null,
+        };
+        _cache.set(key, result);
+        return result;
+      }
+    } catch {
+      // Ignore
+    }
+
+    _cache.set(key, NULL_RESULT);
+    return NULL_RESULT;
   }
 }
 

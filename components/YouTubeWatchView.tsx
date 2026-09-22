@@ -5,6 +5,7 @@ import Link from "next/link";
 import type { ZoroEpisode, ZoroInfo } from "@/lib/types";
 import type { AnimeSeason, AnimeCharacter, AnimeRecommendation } from "@/lib/relations";
 import { SaveButton } from "./SaveButton";
+import { useAnimeTVEpisodes } from "@/hooks/useAnimeTVEpisodes";
 
 export interface YouTubeWatchViewProps {
   slug: string;
@@ -28,6 +29,9 @@ export interface YouTubeWatchViewProps {
   nextHref?: string;
   prevNumber?: number;
   nextNumber?: number;
+  baseInfoPath?: string;
+  baseWatchPath?: string;
+  extraOverviewNode?: React.ReactNode;
 }
 
 const RANGE_SIZE = 30;
@@ -56,6 +60,9 @@ export function YouTubeWatchView({
   nextHref,
   prevNumber,
   nextNumber,
+  baseInfoPath = "/anime",
+  baseWatchPath = "/watch",
+  extraOverviewNode,
 }: YouTubeWatchViewProps) {
   const [subscribed, setSubscribed] = useState(false);
   const [liked, setLiked] = useState(false);
@@ -82,6 +89,9 @@ export function YouTubeWatchView({
       seasonCacheRef.current.set(initialSlug, initialEpisodes);
     }
   }, [initialSlug, initialEpisodes]);
+
+  // Crunchyroll episode thumbnails directly from AniMeTVPlus API
+  const { episodesMap: crEpMap } = useAnimeTVEpisodes(initialInfo.malId || initialInfo.anilistId);
 
   // Effective seasons computed from props, initialInfo.seasons, or current anime as Season 1
   const effectiveSeasons = useMemo<AnimeSeason[]>(() => {
@@ -243,26 +253,38 @@ export function YouTubeWatchView({
 
     setLoadingSeason(true);
     try {
-      const res = await fetch(`/api/season?slug=${encodeURIComponent(targetSlug || season.href.replace("/anime/", ""))}`);
+      const apiUrl =
+        baseWatchPath === "/cartoon/watch"
+          ? `/api/cartoon/season?slug=${encodeURIComponent(initialSlug)}&season=${season.seasonNumber}`
+          : `/api/season?slug=${encodeURIComponent(targetSlug || season.href.replace("/anime/", ""))}`;
+      const res = await fetch(apiUrl);
       const data = await res.json();
 
       if (data.ok) {
-        setSidebarSlug(data.slug);
+        setSidebarSlug(data.slug || targetSlug);
         const eps = data.episodes || [];
         setSidebarEpisodes(eps);
         if (eps.length > 0) {
           seasonCacheRef.current.set(targetSlug, eps);
-          if (data.slug !== targetSlug) {
+          if (data.slug && data.slug !== targetSlug) {
             seasonCacheRef.current.set(data.slug, eps);
           }
         }
         setActiveRangeIndex(0);
       } else {
         // Fallback: full browser navigation if API couldn't resolve
-        window.location.href = `/watch/${encodeURIComponent(targetSlug)}/1?audio=${audio}`;
+        const fallbackHref =
+          baseWatchPath === "/cartoon/watch"
+            ? `${baseWatchPath}/${encodeURIComponent(targetSlug)}`
+            : `/watch/${encodeURIComponent(targetSlug)}/1?audio=${audio}`;
+        window.location.href = fallbackHref;
       }
     } catch {
-      window.location.href = `/watch/${encodeURIComponent(targetSlug)}/1?audio=${audio}`;
+      const fallbackHref =
+        baseWatchPath === "/cartoon/watch"
+          ? `${baseWatchPath}/${encodeURIComponent(targetSlug)}`
+          : `/watch/${encodeURIComponent(targetSlug)}/1?audio=${audio}`;
+      window.location.href = fallbackHref;
     } finally {
       setLoadingSeason(false);
     }
@@ -317,11 +339,10 @@ export function YouTubeWatchView({
         <div className="yt-watch-owner-row">
           {/* Channel Info */}
           <div className="yt-watch-owner">
-            <Link href={`/anime/${encodeURIComponent(initialSlug)}`}>
+            <Link href={`${baseInfoPath}/${encodeURIComponent(initialSlug)}`}>
               <img src={avatarSrc} alt={initialInfo.title} className="yt-watch-avatar" />
             </Link>
             <span className="yt-watch-channel-name">{initialInfo.title}</span>
-
           </div>
 
           {/* Action Buttons */}
@@ -460,6 +481,8 @@ export function YouTubeWatchView({
         {/* Tab 1: OVERVIEW */}
         {primaryTab === "overview" ? (
           <div className="yt-about-container" style={{ maxWidth: "100%", gap: "16px" }}>
+            {extraOverviewNode}
+
             {/* Description & Server Switcher Card */}
             <div className="yt-about-card">
               <h3 className="yt-characters-title" style={{ marginBottom: "12px", fontSize: "12px" }}>
@@ -804,18 +827,27 @@ export function YouTubeWatchView({
             ))
           ) : filteredEpisodes.length ? (
             filteredEpisodes.map((ep) => {
-              const isCurrent = ep.number === episodeNumber && sidebarSlug === initialSlug;
-              const epThumb = ep.thumbnail || currentSeason?.cover || currentSeason?.banner || initialInfo.image || "/fallback-backdrop.jpg";
-              const epName = ep.title && !new RegExp(`^(episode\\s*)?${ep.number}$`, "i").test(ep.title.trim())
-                ? `Episode ${ep.number} · ${ep.title.trim()}`
+              const isCurrent =
+                (ep.number === episodeNumber || (ep.ids && ep.ids === initialSlug) || (ep.slug && ep.slug === initialSlug)) &&
+                (sidebarSlug === initialSlug || effectiveSeasons.length <= 1);
+              const crEpData = crEpMap[ep.number];
+              const epThumb = crEpData?.thumbnail || ep.thumbnail || currentSeason?.cover || currentSeason?.banner || initialInfo.image || "/fallback-backdrop.jpg";
+              const rawTitle = crEpData?.title || ep.title;
+              const epName = rawTitle && !new RegExp(`^(episode\\s*)?${ep.number}$`, "i").test(rawTitle.trim())
+                ? `Episode ${ep.number} · ${rawTitle.trim()}`
                 : `Episode ${ep.number}`;
               const epNumPadded = ep.number < 10 ? `0${ep.number}` : String(ep.number);
+
+              const epHref =
+                baseWatchPath === "/cartoon/watch"
+                  ? `${baseWatchPath}/${encodeURIComponent(ep.ids || ep.slug || `${sidebarSlug}-${ep.number}`)}`
+                  : `/watch/${encodeURIComponent(sidebarSlug)}/${ep.number}?audio=${audio}${provider ? `&provider=${encodeURIComponent(provider)}` : ""}`;
 
               return (
                 <Link
                   key={ep.slug || ep.number}
                   ref={isCurrent ? activeCardRef : undefined}
-                  href={`/watch/${encodeURIComponent(sidebarSlug)}/${ep.number}?audio=${audio}${provider ? `&provider=${encodeURIComponent(provider)}` : ""}`}
+                  href={epHref}
                   className={`yt-up-next-card ${isCurrent ? "is-active" : ""}`}
                 >
                   <div className="yt-up-next-thumb-box">

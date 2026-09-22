@@ -404,6 +404,8 @@ export async function handleHlsProxy(req: NextRequest, method: "GET" | "HEAD") {
       refererHeader = "https://play.echovideo.ru/";
     } else if (target.includes("senshi.live")) {
       refererHeader = "https://senshi.live/";
+    } else if (target.includes("as-cdn")) {
+      refererHeader = "https://as-cdn26.top/";
     } else if (
       target.includes("krussdomi") ||
       target.includes("advancedairesearchlab") ||
@@ -413,6 +415,10 @@ export async function handleHlsProxy(req: NextRequest, method: "GET" | "HEAD") {
     ) {
       refererHeader = "https://krussdomi.com/";
     }
+  }
+
+  if (target.includes("as-cdn") && refererHeader?.includes("animesalt.cx")) {
+    refererHeader = "https://as-cdn26.top/";
   }
 
   let originHeader = reqUrl.searchParams.get("origin");
@@ -514,7 +520,7 @@ export async function handleHlsProxy(req: NextRequest, method: "GET" | "HEAD") {
   if (isM3U8Content) {
     const text = new TextDecoder("utf-8", { fatal: false }).decode(buffer);
     const baseUrl = new URL(target).href;
-    const workerOrigin = "/api/hls";
+    const workerOrigin = req.nextUrl.pathname || "/api/hls";
 
     const rewritten = rewritePlaylist(
       text,

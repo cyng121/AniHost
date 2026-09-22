@@ -336,6 +336,21 @@ export function Player({
     setAdvancing(false);
 
     async function load() {
+      const isMp4 = src.includes("/api/mp4") || /\.mp4(\?|$)/i.test(src);
+      if (isMp4) {
+        video!.src = src;
+        setReady(true);
+        if (wantAutoStart.current && !autoStarted.current) {
+          autoStarted.current = true;
+          video!.play().catch(() => {
+            video!.muted = true;
+            setMuted(true);
+            video!.play().catch(() => setIdle(false));
+          });
+        }
+        return;
+      }
+
       const canNative = video!.canPlayType("application/vnd.apple.mpegurl");
       const HlsMod: any = await import("hls.js");
       if (destroyed) return;
