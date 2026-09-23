@@ -21,7 +21,7 @@ interface MangaSearchDockProps {
 
 const TYPE_OPTIONS = [
   { label: "Manga", value: "manga", desc: "Japanese comics" },
-  { label: "Manwha", value: "manwha", desc: "Korean webtoons" },
+  { label: "Manhwa", value: "manhwa", desc: "Korean webtoons" },
   { label: "Manhua", value: "manhua", desc: "Chinese comics" },
   { label: "All", value: "all", desc: "All comic types" },
 ];

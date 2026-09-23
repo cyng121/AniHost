@@ -100,18 +100,29 @@ export function MangaReaderView({
 
       {/* ── Manga Pages Stream ── */}
       <div className="reader__pages">
-        {pages.map((p, n) => (
-          <img
-            key={`${p.page}-${n}`}
-            className="reader__page"
-            src={p.img}
-            alt={`Page ${p.page + 1}`}
-            loading={n < 2 ? "eager" : "lazy"}
-            decoding="async"
-            fetchPriority={n === 0 ? "high" : "auto"}
-            referrerPolicy="no-referrer"
-          />
-        ))}
+        {pages.map((p, n) => {
+          const proxiedUrl = p.img?.startsWith("http")
+            ? `/api/manga/image?url=${encodeURIComponent(p.img)}`
+            : p.img;
+          return (
+            <img
+              key={`${p.page}-${n}`}
+              className="reader__page"
+              src={proxiedUrl}
+              alt={`Page ${p.page + 1}`}
+              loading={n < 2 ? "eager" : "lazy"}
+              decoding="async"
+              fetchPriority={n === 0 ? "high" : "auto"}
+              onError={(e) => {
+                // If proxy fails, try loading directly from source
+                const target = e.currentTarget;
+                if (target.src !== p.img) {
+                  target.src = p.img;
+                }
+              }}
+            />
+          );
+        })}
       </div>
 
       {/* ── End of Chapter Card ── */}

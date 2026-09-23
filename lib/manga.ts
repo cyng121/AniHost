@@ -118,10 +118,12 @@ export function mangaCover(m: MangaCard | MangaDetail | null | undefined): strin
     return undefined;
   };
 
+  let pick: string | undefined;
+
   // 1. Check nested images object first (Atsu primary format)
   if (anyM.images && typeof anyM.images === "object") {
     const imgs = anyM.images as Record<string, unknown>;
-    const imgPick =
+    pick =
       check(imgs.large) ||
       check(imgs.medium) ||
       check(imgs.small) ||
@@ -129,18 +131,23 @@ export function mangaCover(m: MangaCard | MangaDetail | null | undefined): strin
       check(imgs.cover) ||
       check(imgs.thumbnail) ||
       check(imgs.banner);
-    if (imgPick) return imgPick;
   }
 
   // 2. Check direct property candidates
-  return (
-    check(anyM.thumbnail) ||
-    check(anyM.poster) ||
-    check(anyM.cover) ||
-    check(anyM.image) ||
-    check(anyM.banner) ||
-    undefined
-  );
+  if (!pick) {
+    pick =
+      check(anyM.thumbnail) ||
+      check(anyM.poster) ||
+      check(anyM.cover) ||
+      check(anyM.image) ||
+      check(anyM.banner);
+  }
+
+  if (pick && pick.includes("atsu.moe") && !pick.startsWith("/api/manga/image")) {
+    return `/api/manga/image?url=${encodeURIComponent(pick)}`;
+  }
+
+  return pick;
 }
 
 export interface MangaArt {
@@ -286,11 +293,11 @@ export async function mangaSearch(query: string): Promise<MangaCard[]> {
   const items = safe(res.data?.data);
 
   // The upstream /atsu/search endpoint often returns empty thumbnails.
-  // Enrich items with posters from mangaDetail in parallel so cards have cover art.
+  // Enrich the top few items with posters from mangaDetail in parallel so cards have cover art.
   const needsPoster = items.filter((m) => !mangaCover(m));
   if (needsPoster.length > 0) {
-    await Promise.all(
-      needsPoster.slice(0, 24).map(async (item) => {
+    await Promise.allSettled(
+      needsPoster.slice(0, 6).map(async (item) => {
         try {
           const detail = await mangaDetail(item.id);
           if (detail) {
@@ -320,16 +327,28 @@ export async function mangaDetail(id: string): Promise<MangaDetail | null> {
   return res.ok && res.data?.data?.id ? res.data.data : null;
 }
 
-/** Chapters live on /info, not /detail — the provider splits them. */
+/** Chapters live on /info, but fallback to /detail if /info is empty. */
 export async function mangaChapters(id: string): Promise<MangaChapter[]> {
   const res = await backendGet<Envelope<{ chapters?: MangaChapter[] }>>(
     `/atsu/info/${encodeURIComponent(id)}`,
     { revalidate: 900 },
   );
-  if (!res.ok) return [];
-  return (res.data?.data?.chapters ?? [])
-    .filter((c) => c?.id && Number.isFinite(c.number))
-    .sort((a, b) => a.number - b.number);
+  if (res.ok && res.data?.data?.chapters && res.data.data.chapters.length > 0) {
+    return (res.data.data.chapters)
+      .filter((c) => c?.id && Number.isFinite(c.number))
+      .sort((a, b) => a.number - b.number);
+  }
+
+  // Fallback: check if detail endpoint contains chapters
+  const detail = await mangaDetail(id);
+  const detailChapters = (detail as any)?.chapters;
+  if (Array.isArray(detailChapters) && detailChapters.length > 0) {
+    return detailChapters
+      .filter((c: any) => c?.id && Number.isFinite(c.number))
+      .sort((a: any, b: any) => a.number - b.number);
+  }
+
+  return [];
 }
 
 /**
@@ -375,27 +394,10 @@ export async function mangaRecommendations(
     .map((g) => (typeof g === "string" ? g : g?.genre || (g as any)?.name || "").trim())
     .filter(Boolean);
 
-  const primaryGenre = genreNames[0];
-
-  // 1. Fetch search results for the primary genre to get strongly related titles
-  if (primaryGenre) {
-    try {
-      const genreItems = await mangaSearch(primaryGenre);
-      for (const item of genreItems) {
-        if (item?.id && !seen.has(item.id)) {
-          seen.add(item.id);
-          candidates.push(item);
-        }
-      }
-    } catch {
-      // ignore individual failure
-    }
-  }
-
-  // 2. Load popular / top-rated shelves from mangaHome
+  // Load popular / top-rated shelves from mangaHome (cached, fast, already formatted)
   try {
     const shelves = await mangaHome();
-    const priorityShelves = ["popular", "top-rated", "trending-carousel", "hot-updates"];
+    const priorityShelves = ["popular", "top-rated", "trending-carousel", "hot-updates", "recently-updated"];
     for (const key of priorityShelves) {
       for (const item of shelves[key] ?? []) {
         if (item?.id && !seen.has(item.id)) {
@@ -408,7 +410,7 @@ export async function mangaRecommendations(
     // ignore
   }
 
-  // 3. Score candidates by matching type, matching genres, and rating
+  // Score candidates by matching type, matching genres, and rating
   const targetType = (type || "Manga").toLowerCase();
   const lowerGenres = genreNames.map((g) => g.toLowerCase());
 

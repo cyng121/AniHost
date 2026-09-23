@@ -61,16 +61,39 @@ interface AtsuItem {
 
 function normalise(data: unknown, scope: SearchScope): Suggestion[] {
   if (scope === "manga") {
-    const rows = (data as { data?: unknown })?.data ?? data;
-    if (!Array.isArray(rows)) return [];
+    const raw = (data as Record<string, any>)?.data ?? data;
+    const rows = Array.isArray(raw)
+      ? raw
+      : Array.isArray((raw as any)?.items)
+        ? (raw as any).items
+        : Array.isArray((raw as any)?.results)
+          ? (raw as any).results
+          : Array.isArray((data as any)?.items)
+            ? (data as any).items
+            : [];
+
     return (rows as AtsuItem[])
       .filter((m) => m?.id && m?.title && !m.isAdult)
-      .map((m) => ({
-        id: String(m.id),
-        title: String(m.title),
-        image: m.images?.medium ?? m.images?.large ?? m.images?.small ?? m.thumbnail,
-        meta: m.type,
-      }));
+      .map((m) => {
+        const anyM = m as Record<string, any>;
+        const img =
+          m.images?.large ||
+          m.images?.medium ||
+          m.images?.small ||
+          m.thumbnail ||
+          anyM.poster ||
+          anyM.image;
+        let resolvedImg = typeof img === "string" && img.trim() ? img.trim() : undefined;
+        if (resolvedImg && resolvedImg.includes("atsu.moe") && !resolvedImg.startsWith("/api/manga/image")) {
+          resolvedImg = `/api/manga/image?url=${encodeURIComponent(resolvedImg)}`;
+        }
+        return {
+          id: String(m.id),
+          title: String(m.title),
+          image: resolvedImg,
+          meta: m.type || "Manga",
+        };
+      });
   }
 
   if (!data || typeof data !== "object") return [];
