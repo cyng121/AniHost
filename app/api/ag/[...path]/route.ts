@@ -26,6 +26,9 @@ const ALLOWED_PREFIXES = [
   "anilist",
   "mal",
   "kitsu",
+  // Added by the operator: the one mirror verified to actually deliver
+  // media bytes from this host, relayed through the bAnime AnimeKai route.
+  "animekai",
 ];
 const memoryCache = new Map<string, { data: unknown; expires: number }>();
 const MAX_CACHE_ENTRIES = 500;
