@@ -1,20 +1,5 @@
 import "server-only";
 
-/**
- * Signing for the stream proxy — uses the Web Crypto API so this module is
- * compatible with the Cloudflare Edge Runtime (V8 isolates).
- *
- * Without signing, /api/hls will fetch any public URL for anyone who asks —
- * the deployment becomes a free open relay running on our bandwidth and our IP
- * reputation. Every proxied URL is therefore stamped with an HMAC-SHA-256 over
- * the exact target and referer, and the route refuses anything that does not
- * verify. Only our own server can mint a working link.
- *
- * The secret lives in ANIGHOST_PROXY_SECRET. If it is not set the route falls
- * back to refusing cross-site requests, which stops casual abuse but is weaker
- * — production should always set it.
- */
-
 const SECRET_RAW = process.env.ANIGHOST_PROXY_SECRET?.trim() ?? "";
 
 export const signingEnabled = SECRET_RAW.length >= 16;

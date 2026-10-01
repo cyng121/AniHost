@@ -203,6 +203,48 @@ export async function resolveStream(ids: string, options: Options): Promise<Stre
   if (!episode.ok) return { stream: null, available: { sub: [], dub: [] }, error: episode.error };
   const root = unwrap(episode.data);
 
+  // Multi-language Abyss handling for AnimeSalt
+  const multiLang = list(root.multiLangData ?? (asRecord(list(root.servers)[1]).multiLangData));
+  if (usedProvider === "animesalt" && multiLang.length > 0 && options.serverName?.toLowerCase().includes("abyss")) {
+    const targetItem = (multiLang.find((m: any) =>
+      options.audio === "dub"
+        ? String(m?.language).toLowerCase().includes("hindi")
+        : String(m?.language).toLowerCase().includes("english")
+    ) || multiLang[0]) as Record<string, unknown>;
+    const abyssId = text(targetItem, "id", "abyssId");
+    if (abyssId) {
+      const abyssRes = await api.animesaltAbyss(abyssId);
+      if (abyssRes.ok) {
+        const abyssData = unwrap(abyssRes.data);
+        const sourcesList = list(abyssData.sources);
+        const chosen = asRecord(sourcesList[1] || sourcesList[0]);
+        const sourceUrl = text(chosen, "url");
+        if (sourceUrl) {
+          const ref = text(abyssData, "referer") || "https://playhydrax.com/";
+          const mp4Proxy = `/api/mp4?url=${encodeURIComponent(sourceUrl)}&referer=${encodeURIComponent(ref)}`;
+          const srv = `AnimeSalt (${text(targetItem, "language") || "Multi-Lang"} MP4)`;
+          return {
+            stream: {
+              url: mp4Proxy,
+              audio: options.audio,
+              serverName: srv,
+              referer: ref,
+              subtitles: [],
+            },
+            available: {
+              sub: ["AnimeSalt (Hindi)", srv],
+              dub: ["AnimeSalt (Hindi)", srv],
+            },
+            episodeMeta: {
+              title: text(root, "title", "episodeTitle"),
+              thumbnail: text(root, "thumbnail", "image", "img") || undefined,
+            },
+          };
+        }
+      }
+    }
+  }
+
   // Direct payload handling (e.g. watchanimeworld, animesalt, toons which return m3u8 or iframe directly)
   const directM3u8 = text(root, "m3u8", "file", "stream", "fileUrl", "src");
   const directIframe = text(root, "iframe", "url");
@@ -219,17 +261,27 @@ export async function resolveStream(ids: string, options: Options): Promise<Stre
         : text(root, "serverName", "server", "name") || "Default";
 
     const audioTrack = options.audio;
+    const srvList =
+      usedProvider === "animesalt" && multiLang.length > 0
+        ? [srvName, "AnimeSalt (Abyss MP4)"]
+        : [srvName];
+
+    const streamUrl =
+      usedProvider === "animesalt" && directUrl.includes(".m3u8")
+        ? `/m3u8?url=${encodeURIComponent(directUrl)}&referer=${encodeURIComponent("https://as-cdn26.top/")}`
+        : directUrl;
+
     return {
       stream: {
-        url: directUrl,
+        url: streamUrl,
         audio: audioTrack,
         serverName: srvName,
         referer: text(root, "referer") || originOf(directUrl) || undefined,
         subtitles: list(root.subtitles ?? root.tracks).map(parseTrack).filter(Boolean) as StreamSubtitle[],
       },
       available: {
-        sub: audioTrack === "sub" ? [srvName] : ["Default"],
-        dub: audioTrack === "dub" ? [srvName] : [srvName],
+        sub: audioTrack === "sub" ? srvList : ["Default"],
+        dub: audioTrack === "dub" ? srvList : srvList,
       },
       episodeMeta: {
         title: text(root, "title", "episodeTitle"),

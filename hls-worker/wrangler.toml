@@ -1,9 +1,0 @@
-name = "anighost-hls"
-main = "src/index.ts"
-compatibility_date = "2026-09-09"
-
-[observability]
-enabled = true
-
-[vars]
-ALLOWED_ORIGIN = "https://anighost.com"

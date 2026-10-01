@@ -1,6 +1,8 @@
+import path from "path";
 import type { NextConfig } from "next";
 
 const config: NextConfig = {
+  outputFileTracingRoot: path.join(__dirname),
   // hls.js ships an ESM build that Next.js needs to transpile.
   transpilePackages: ["hls.js"],
   images: {

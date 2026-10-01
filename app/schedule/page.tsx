@@ -8,7 +8,7 @@ import { ScheduleView, type ScheduleDay } from "@/components/ScheduleView";
 import type { ZoroScheduleEntry } from "@/lib/types";
 
 export const metadata: Metadata = {
-  title: "Schedule · Ani Ghost",
+  title: "Schedule · AniHost",
   description: "What airs today, and every day this week with official logos and artwork.",
 };
 

@@ -8,10 +8,8 @@ import { proxiedPlaylist, proxiedSubtitle, resolveStream } from "@/lib/stream";
 import { findAnimeFranchiseData } from "@/lib/relations";
 import { WatchStage } from "@/components/WatchStage";
 import { YouTubeWatchView } from "@/components/YouTubeWatchView";
-import { CommunityThread } from "@/components/CommunityThread";
 import { Notice } from "@/components/Notice";
 import { Footer } from "@/components/Footer";
-import { ViewerIsland } from "@/components/ViewerIsland";
 
 /**
  * Source links are short-lived signed URLs, so this page is always rendered
@@ -221,15 +219,6 @@ export default async function WatchPage({
     </div>
   );
 
-  const commentsNode = (
-    <CommunityThread
-      key={`${slug}:${current.number}`}
-      slug={slug}
-      title={info.title}
-      episode={current.number}
-    />
-  );
-
   return (
     <div>
       <YouTubeWatchView
@@ -249,14 +238,11 @@ export default async function WatchPage({
         characters={franchise.characters}
         recommendations={franchise.recommendations}
         playerNode={playerNode}
-        commentsNode={commentsNode}
         prevHref={prevHref}
         nextHref={nextHref}
         prevNumber={prev?.number}
         nextNumber={next?.number}
       />
-
-      <ViewerIsland />
 
       <div style={{ marginTop: "48px" }}>
         <Footer />

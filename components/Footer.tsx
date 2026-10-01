@@ -7,15 +7,15 @@ import { Wordmark } from "./Wordmark";
  * dock owns the bottom of the screen. The footer carries the same link so the
  * community is still one tap away on a phone.
  */
-const DISCORD_URL = process.env.NEXT_PUBLIC_ANIGHOST_DISCORD_URL?.trim() || "https://discord.gg/8QNhUY5ZRH";
+const DISCORD_URL = process.env.NEXT_PUBLIC_ANIGHOST_DISCORD_URL?.trim() || "https://discord.gg/CW9kFv2SPT";
 
 function discordHref(): string {
-  if (!DISCORD_URL) return "https://discord.gg/8QNhUY5ZRH";
+  if (!DISCORD_URL) return "https://discord.gg/CW9kFv2SPT";
   try {
     const url = new URL(DISCORD_URL);
-    return url.protocol === "https:" ? url.toString() : "https://discord.gg/8QNhUY5ZRH";
+    return url.protocol === "https:" ? url.toString() : "https://discord.gg/CW9kFv2SPT";
   } catch {
-    return "https://discord.gg/8QNhUY5ZRH";
+    return "https://discord.gg/CW9kFv2SPT";
   }
 }
 

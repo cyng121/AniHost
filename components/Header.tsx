@@ -23,6 +23,7 @@ const LEFT = [
 // Genres already has its own section on Browse, so it is not repeated here.
 const RIGHT = [
   { href: "/manga", label: "Manga" },
+  { href: "/cartoon", label: "Cartoons" },
   { href: "/schedule", label: "Schedule" },
   { href: "/saves", label: "Saved" },
 ];
@@ -197,7 +198,7 @@ export function Header() {
     <header className={stuck ? "topbar stuck" : "topbar"}>
       <div className="topbar__in">
         <div className="topbar__lead">
-          <Link className="brand" href="/" aria-label="Ani Ghost — home">
+          <Link className="brand" href="/" aria-label="AniHost — home">
             <Ghost priority />
           </Link>
           <nav className="topnav topnav--left" aria-label="Primary">

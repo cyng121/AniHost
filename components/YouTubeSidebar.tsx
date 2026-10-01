@@ -50,6 +50,19 @@ export function YouTubeSidebar({ isExpanded }: YouTubeSidebarProps) {
           </span>
           <span className="yt-nav-item__label">Manga</span>
         </Link>
+
+        <Link
+          href="/cartoon"
+          className={`yt-nav-item ${pathname.startsWith("/cartoon") ? "is-active" : ""}`}
+        >
+          <span className="yt-nav-item__icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <rect x="2" y="7" width="20" height="15" rx="2" ry="2" />
+              <polyline points="17 2 12 7 7 2" />
+            </svg>
+          </span>
+          <span className="yt-nav-item__label">Cartoons</span>
+        </Link>
       </div>
 
       {isExpanded ? (

@@ -3,19 +3,33 @@ import type { MetadataRoute } from "next";
 import { siteOrigin } from "@/lib/site";
 
 /**
- * Crawl rules.
+ * Enhanced crawl rules for search engine indexing.
  *
- * The catalogue is worth indexing; the machinery around it is not. /api is
- * proxy plumbing, /watch and /search are per-session views that would only
- * dilute the index, and /settings is personal to the device.
+ * Directs search engine crawlers (Googlebot, Bingbot, etc.) to index all
+ * valuable public pages (catalogues, genres, anime/manga/cartoon pages),
+ * while blocking internal APIs, video streaming proxies, and personal session routes.
  */
 export default function robots(): MetadataRoute.Robots {
+  const origin = siteOrigin();
+
   return {
-    rules: {
-      userAgent: "*",
-      allow: "/",
-      disallow: ["/api/", "/watch/", "/search", "/settings"],
-    },
-    sitemap: `${siteOrigin()}/sitemap.xml`,
+    rules: [
+      {
+        userAgent: "*",
+        allow: "/",
+        disallow: [
+          "/api/",
+          "/cdn/",
+          "/m3u8/",
+          "/saves/",
+          "/watch/",
+          "/search",
+          "/settings",
+        ],
+      },
+    ],
+    sitemap: `${origin}/sitemap.xml`,
+    host: origin,
   };
 }
+

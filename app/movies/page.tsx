@@ -9,7 +9,7 @@ import { Notice } from "@/components/Notice";
 export const revalidate = 900;
 
 export const metadata: Metadata = {
-  title: "Anime Movies · Ani Ghost",
+  title: "Anime Movies · AniHost",
   description: "Watch high quality anime movies subbed and dubbed with no ads.",
 };
 

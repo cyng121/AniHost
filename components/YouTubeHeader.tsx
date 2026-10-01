@@ -194,12 +194,12 @@ export function YouTubeHeader({ onToggleSidebar }: YouTubeHeaderProps) {
               </svg>
             </button>
 
-            <Link className="yt-brand" href="/" aria-label="AniGhost Home">
+            <Link className="yt-brand" href="/" aria-label="AniHost Home">
               <span className="yt-brand__logo" style={{ width: 26, height: 26 }}>
                 <Ghost priority />
               </span>
               <span className="yt-brand__name">
-                AniGhost
+                AniHost
                 <span className="yt-brand__badge">IN</span>
               </span>
             </Link>

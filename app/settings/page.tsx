@@ -1,15 +1,13 @@
 "use client";
 export const runtime = "edge";
-import type { User } from "@supabase/supabase-js";
 import Link from "next/link";
 import { useEffect, useState, type FormEvent } from "react";
 import { Avatar, CHARACTERS } from "@/components/Avatar";
 import { listProgress } from "@/lib/progress";
 import { DEFAULTS, readPrefs, writePrefs, type Prefs } from "@/lib/prefs";
-import { getSupabaseBrowserClient } from "@/lib/supabase/browser";
 import { Footer } from "@/components/Footer";
 
-const DISCORD_URL = process.env.NEXT_PUBLIC_ANIGHOST_DISCORD_URL?.trim() || "https://discord.gg/8QNhUY5ZRH";
+const DISCORD_URL = process.env.NEXT_PUBLIC_ANIGHOST_DISCORD_URL?.trim() || "https://discord.gg/CW9kFv2SPT";
 
 function Segmented({
   value,
@@ -40,7 +38,6 @@ function Segmented({
 
 export default function SettingsPage() {
   const [prefs, setPrefs] = useState<Prefs>(DEFAULTS);
-  const [user, setUser] = useState<User | null>(null);
   const [ready, setReady] = useState(false);
   const [watched, setWatched] = useState(0);
   const [savesCount, setSavesCount] = useState(0);
@@ -60,14 +57,6 @@ export default function SettingsPage() {
     }
     const saved = window.localStorage.getItem("anighost-theme");
     setTheme(saved === "light" || saved === "dark" ? saved : "system");
-
-    const client = getSupabaseBrowserClient();
-    if (client) {
-      client.auth.getUser().then(({ data }) => {
-        if (data.user) setUser(data.user);
-      });
-    }
-
     setReady(true);
   }, []);
 
@@ -75,28 +64,11 @@ export default function SettingsPage() {
     setPrefs(writePrefs({ [key]: value } as Partial<Prefs>));
   }
 
-  async function saveUsername(e: FormEvent) {
+  function saveUsername(e: FormEvent) {
     e.preventDefault();
     const clean = nameInput.trim().slice(0, 32);
     setSavingName(true);
     set("username", clean);
-
-    const client = getSupabaseBrowserClient();
-    if (client && user) {
-      try {
-        await client.auth.updateUser({
-          data: { name: clean || undefined, full_name: clean || undefined },
-        });
-        if (clean) {
-          await client
-            .from("anime_comments")
-            .update({ display_name: clean, updated_at: new Date().toISOString() })
-            .eq("user_id", user.id);
-        }
-      } catch {
-        /* silent fallback */
-      }
-    }
     setSavingName(false);
     setEditingName(false);
   }
@@ -115,9 +87,7 @@ export default function SettingsPage() {
   const selectedIndex = ((prefs.character % CHARACTERS.length) + CHARACTERS.length) % CHARACTERS.length;
   const character = CHARACTERS[selectedIndex];
   const customName = prefs.username?.trim();
-  const rawMetaName = user?.user_metadata?.full_name ?? user?.user_metadata?.name;
-  const activeName =
-    customName || (typeof rawMetaName === "string" && rawMetaName.trim() ? rawMetaName.trim() : character.name);
+  const activeName = customName || character.name;
 
   return (
     <main className="wrap page set">
@@ -145,7 +115,7 @@ export default function SettingsPage() {
             type="button"
             className="btn btn--ghost btn--sm"
             onClick={() => {
-              setNameInput(prefs.username?.trim() || (user ? String(rawMetaName ?? "") : ""));
+              setNameInput(prefs.username?.trim() || "");
               setEditingName((prev) => !prev);
             }}
           >

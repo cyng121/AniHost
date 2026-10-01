@@ -4,8 +4,8 @@ import type { MetadataRoute } from "next";
 export default function manifest(): MetadataRoute.Manifest {
   return {
     id: "/browse",
-    name: "Ani Ghost",
-    short_name: "Ani Ghost",
+    name: "AniHost",
+    short_name: "AniHost",
     description: "Pick up your anime anywhere — on desktop, mobile, or TV.",
     start_url: "/browse",
     scope: "/",

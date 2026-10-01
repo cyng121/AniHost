@@ -4,6 +4,8 @@ import { NextRequest, NextResponse } from "next/server";
 // 🔒 ALLOWED ORIGINS
 // =========================================
 export const ALLOWED_ORIGINS = [
+  "https://anihosts.xyz",
+  "https://www.anihosts.xyz",
   "https://anighost.com",
   "https://www.anighost.com",
   "https://animextrons.co.in",
@@ -359,8 +361,14 @@ export async function handleHlsProxy(req: NextRequest, method: "GET" | "HEAD") {
     }
   }
 
-  // Prevent double proxying if already an /api/hls URL
-  if (target && (target.startsWith("/api/hls") || target.includes("/api/hls?"))) {
+  // Prevent double proxying if already an /api/hls or /m3u8 URL
+  if (
+    target &&
+    (target.startsWith("/api/hls") ||
+      target.includes("/api/hls?") ||
+      target.startsWith("/m3u8") ||
+      target.includes("/m3u8?"))
+  ) {
     try {
       const parsed = new URL(target, reqUrl.origin);
       target = parsed.searchParams.get("url") || parsed.searchParams.get("u") || target;

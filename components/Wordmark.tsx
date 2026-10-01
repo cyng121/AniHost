@@ -5,7 +5,7 @@ export function Wordmark({
 }) {
   return (
     <span className={["wordmark", className].filter(Boolean).join(" ")}>
-      Ani Ghost
+      AniHost
     </span>
   );
 }

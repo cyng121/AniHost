@@ -9,7 +9,6 @@ import { Corners } from "@/components/Corners";
 import { siteOrigin } from "@/lib/site";
 import { RouteProgress } from "@/components/RouteProgress";
 import { MobileDock } from "@/components/MobileDock";
-import { AuthSessionSync } from "@/components/AuthSessionSync";
 import { TVNavigationManager } from "@/components/TVNavigationManager";
 import { PwaRuntime } from "@/components/PwaRuntime";
 
@@ -28,15 +27,15 @@ export const metadata: Metadata = {
   // Every page declares the canonical host, so previews and the vercel.app
   // alias never compete with anighost.com in an index.
   alternates: { canonical: "/" },
-  title: { default: "Ani Ghost", template: "%s — Ani Ghost" },
+  title: { default: "AniHost", template: "%s — AniHost" },
   description,
-  applicationName: "Ani Ghost",
+  applicationName: "AniHost",
   manifest: "/manifest.webmanifest",
-  appleWebApp: { capable: true, title: "Ani Ghost", statusBarStyle: "black-translucent" },
+  appleWebApp: { capable: true, title: "AniHost", statusBarStyle: "black-translucent" },
   openGraph: {
     type: "website",
-    siteName: "Ani Ghost",
-    title: "Ani Ghost",
+    siteName: "AniHost",
+    title: "AniHost",
     description,
   },
   // icon.png and apple-icon.png live in public/ rather than app/: metadata
@@ -47,7 +46,7 @@ export const metadata: Metadata = {
   icons: { icon: "/icon.png", apple: "/apple-icon.png" },
   twitter: {
     card: "summary",
-    title: "Ani Ghost",
+    title: "AniHost",
     description,
   },
 };
@@ -82,9 +81,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <script defer src="https://cloud.umami.is/script.js" data-website-id="6d1f045e-b4d5-47d1-986c-602dff80e8ea"></script>
       </head>
       <body>
-        <Suspense fallback={null}>
-          <AuthSessionSync />
-        </Suspense>
         <TVNavigationManager />
         <PwaRuntime />
         <Suspense fallback={null}>

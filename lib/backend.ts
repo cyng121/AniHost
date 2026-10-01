@@ -16,20 +16,15 @@ import "server-only";
 
 function getBaseUrl(): string {
   const envBase = process.env.ANIGHOST_API_BASE?.trim();
-  if (
-    envBase &&
-    !envBase.includes("vercel.app") &&
-    !envBase.includes("localhost") &&
-    !envBase.includes("senpaiflix") &&
-    !envBase.includes("onrender.com")
-  ) {
+  if (envBase && !envBase.includes("vercel.app") && !envBase.includes("localhost")) {
     return envBase.replace(/\/+$/, "");
   }
   return "https://api.animextrons.co.in";
 }
 
 const BASE = getBaseUrl();
-const ORIGIN = "https://animextrons.co.in";
+const ORIGIN =
+  process.env.ANIGHOST_API_ORIGIN?.trim() || "https://animextrons.co.in";
 const CACHE_SECONDS = Number(process.env.ANIGHOST_CACHE_SECONDS ?? 300);
 
 /** Upstream scrapers are slow and occasionally hang; never wait forever. */
@@ -269,6 +264,14 @@ export const api = {
       `/animesalt/mal/${anilistId}/${epNum}`,
       { revalidate: 600 },
     ),
+
+  /** AnimeSalt sources by episode slug */
+  animesaltSources: (episodeSlug: string) =>
+    backendGet<any>(`/animesalt/sources/${encodeURIComponent(episodeSlug)}`, { revalidate: 300 }),
+
+  /** AnimeSalt abyss multi-lang decryption by abyss id */
+  animesaltAbyss: (id: string) =>
+    backendGet<any>(`/animesalt/abyss/${encodeURIComponent(id)}`, { revalidate: 3600 }),
 
   /** WatchAnimeWorld Hindi provider episode stream */
   watchanimeworldAnilist: (anilistId: number | string, epNum: number | string) =>

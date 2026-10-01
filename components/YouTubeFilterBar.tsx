@@ -36,6 +36,21 @@ const MANGA_CHIPS = [
   "Sci-Fi",
 ];
 
+const CARTOON_CHIPS = [
+  "All",
+  "Series",
+  "Movies",
+  "Shinchan Movies",
+  "Doraemon Movies",
+  "Pokémon Movies",
+  "Beyblade Movies",
+  "Trending",
+  "Action",
+  "Comedy",
+  "Kids",
+  "Sci-Fi",
+];
+
 interface YouTubeFilterBarProps {
   basePath?: string;
   chips?: string[];
@@ -46,9 +61,10 @@ export function YouTubeFilterBar({ basePath, chips }: YouTubeFilterBarProps) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  const isManga = basePath === "/manga" || pathname?.startsWith("/manga");
-  const resolvedBasePath = basePath || (isManga ? "/manga" : "/");
-  const resolvedChips = chips || (isManga ? MANGA_CHIPS : ANIME_GENRES);
+  const isCartoon = basePath === "/cartoon" || pathname?.startsWith("/cartoon");
+  const isManga = !isCartoon && (basePath === "/manga" || pathname?.startsWith("/manga"));
+  const resolvedBasePath = basePath || (isCartoon ? "/cartoon" : isManga ? "/manga" : "/");
+  const resolvedChips = chips || (isCartoon ? CARTOON_CHIPS : isManga ? MANGA_CHIPS : ANIME_GENRES);
 
   const activeGenre = searchParams.get("genre");
   const activeSort = searchParams.get("sort");
@@ -59,7 +75,19 @@ export function YouTubeFilterBar({ basePath, chips }: YouTubeFilterBarProps) {
   if (activeGenre) currentChip = activeGenre;
   else if (activeSort === "top-rated") currentChip = "Top rated";
   else if (activeSort === "new-releases") currentChip = "New releases";
-  else if (activeShelf === "trending" || activeShelf === "trending-carousel") currentChip = "Trending";
+  else if (activeShelf === "series" || activeShelf === "cartoon-series") currentChip = "Series";
+  else if (activeShelf === "movies" || activeShelf === "cartoon-movies") currentChip = "Movies";
+  else if (activeShelf === "doraemon-series") currentChip = "Series";
+  else if (activeShelf === "shinchan-series") currentChip = "Series";
+  else if (activeShelf === "ninja-hattori") currentChip = "Series";
+  else if (activeShelf === "pokemon-series") currentChip = "Series";
+  else if (activeShelf === "beyblade" || activeShelf === "beyblade-series") currentChip = "Series";
+  else if (activeShelf === "shinchan-movies") currentChip = "Shinchan Movies";
+  else if (activeShelf === "doraemon-movies") currentChip = "Doraemon Movies";
+  else if (activeShelf === "pokemon-movies") currentChip = "Pokémon Movies";
+  else if (activeShelf === "beyblade-movies") currentChip = "Beyblade Movies";
+  else if (activeShelf === "cartoons" || activeShelf === "trending") currentChip = "Trending";
+  else if (activeShelf === "trending-carousel") currentChip = "Trending";
   else if (activeShelf === "hot-updates") currentChip = "Hot updates";
   else if (activeShelf === "top-rated") currentChip = "Top rated";
   else if (activeShelf === "popular") currentChip = "Popular";
@@ -73,7 +101,25 @@ export function YouTubeFilterBar({ basePath, chips }: YouTubeFilterBarProps) {
       return;
     }
 
-    if (isManga) {
+    if (isCartoon) {
+      if (chip === "Series") {
+        router.push(`${resolvedBasePath}?shelf=series`);
+      } else if (chip === "Movies") {
+        router.push(`${resolvedBasePath}?shelf=movies`);
+      } else if (chip === "Shinchan Movies") {
+        router.push(`${resolvedBasePath}?shelf=shinchan-movies`);
+      } else if (chip === "Doraemon Movies") {
+        router.push(`${resolvedBasePath}?shelf=doraemon-movies`);
+      } else if (chip === "Pokémon Movies") {
+        router.push(`${resolvedBasePath}?shelf=pokemon-movies`);
+      } else if (chip === "Beyblade Movies") {
+        router.push(`${resolvedBasePath}?shelf=beyblade-movies`);
+      } else if (chip === "Trending") {
+        router.push(`${resolvedBasePath}?shelf=trending`);
+      } else {
+        router.push(`${resolvedBasePath}?genre=${encodeURIComponent(chip.toLowerCase())}`);
+      }
+    } else if (isManga) {
       if (chip === "Trending") {
         router.push(`${resolvedBasePath}?shelf=trending`);
       } else if (chip === "Hot updates") {

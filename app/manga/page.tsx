@@ -8,7 +8,7 @@ import { Notice } from "@/components/Notice";
 import { MangaSearchDock } from "@/components/MangaSearchDock";
 
 export const metadata: Metadata = {
-  title: "Manga · Ani Ghost",
+  title: "Manga · AniHost",
   description: "Read trending manga, manhwa, and manhua in YouTube-style video feed.",
 };
 

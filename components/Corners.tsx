@@ -12,7 +12,7 @@ import { useEffect, useRef, useState } from "react";
  */
 
 const SUPPORT_URL = process.env.NEXT_PUBLIC_ANIGHOST_SUPPORT_URL?.trim() ?? "";
-const DISCORD_URL = process.env.NEXT_PUBLIC_ANIGHOST_DISCORD_URL?.trim() || "https://discord.gg/8QNhUY5ZRH";
+const DISCORD_URL = process.env.NEXT_PUBLIC_ANIGHOST_DISCORD_URL?.trim() || "https://discord.gg/CW9kFv2SPT";
 
 /** Only an https link is worth rendering; anything else is a dead button. */
 function safeExternal(raw: string): string | null {

@@ -29,7 +29,7 @@ function catalogItemToCard(item: CatalogAnimeItem): ZoroCard {
 }
 
 export const metadata: Metadata = {
-  title: "Home · Ani Ghost",
+  title: "Home · AniHost",
   description: "Explore trending anime, movies, and episodes in YouTube-style video feed.",
 };
 

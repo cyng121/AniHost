@@ -24,7 +24,6 @@ export interface YouTubeWatchViewProps {
   characters?: AnimeCharacter[];
   recommendations?: AnimeRecommendation[];
   playerNode: React.ReactNode;
-  commentsNode: React.ReactNode;
   prevHref?: string;
   nextHref?: string;
   prevNumber?: number;
@@ -36,7 +35,7 @@ export interface YouTubeWatchViewProps {
 
 const RANGE_SIZE = 30;
 
-type PrimaryWatchTab = "overview" | "seasons" | "characters" | "recommended" | "comments";
+type PrimaryWatchTab = "overview" | "seasons" | "characters" | "recommended";
 
 export function YouTubeWatchView({
   slug: initialSlug,
@@ -55,7 +54,6 @@ export function YouTubeWatchView({
   characters = [],
   recommendations = [],
   playerNode,
-  commentsNode,
   prevHref,
   nextHref,
   prevNumber,
@@ -466,16 +464,6 @@ export function YouTubeWatchView({
               Recommended
             </button>
           ) : null}
-
-          <button
-            type="button"
-            className={`yt-channel-tab ${primaryTab === "comments" ? "is-active" : ""}`}
-            onClick={() => setPrimaryTab("comments")}
-            role="tab"
-            aria-selected={primaryTab === "comments"}
-          >
-            Comments
-          </button>
         </nav>
 
         {/* Tab 1: OVERVIEW */}
@@ -548,11 +536,6 @@ export function YouTubeWatchView({
                   </>
                 ) : null}
               </div>
-            </div>
-
-            {/* Comments below Overview */}
-            <div style={{ marginTop: "24px" }}>
-              {commentsNode}
             </div>
           </div>
         ) : null}
@@ -715,13 +698,6 @@ export function YouTubeWatchView({
                 );
               })}
             </div>
-          </div>
-        ) : null}
-
-        {/* Tab 5: COMMENTS (Dedicated View) */}
-        {primaryTab === "comments" ? (
-          <div style={{ marginTop: "8px" }}>
-            {commentsNode}
           </div>
         ) : null}
       </div>
