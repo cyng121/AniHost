@@ -6,13 +6,11 @@ function getBaseUrl(): string {
   if (
     envBase &&
     !envBase.includes("vercel.app") &&
-    !envBase.includes("localhost") &&
-    !envBase.includes("senpaiflix") &&
-    !envBase.includes("onrender.com")
+    !envBase.includes("localhost")
   ) {
     return envBase.replace(/\/+$/, "");
   }
-  return "https://api.animextrons.co.in";
+  return "https://senpaiflix-backend.onrender.com";
 }
 
 const API = getBaseUrl();
