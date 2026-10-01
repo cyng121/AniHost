@@ -79,11 +79,7 @@ export async function backendGet<T>(
   const fetchPromise = (async (): Promise<Result<T>> => {
     const cleanPath = path.startsWith("/") ? path : `/${path}`;
     const primaryUrl = `${BASE}${cleanPath}`;
-    const fallbackUrl = `https://api.animextrons.co.in${cleanPath}`;
     const urlsToTry = [primaryUrl];
-    if (primaryUrl !== fallbackUrl) {
-      urlsToTry.push(fallbackUrl);
-    }
 
     let lastResult: Result<T> = {
       ok: false,
