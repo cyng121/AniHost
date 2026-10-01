@@ -33,7 +33,7 @@ export const metadata: Metadata = {
   description: "Explore trending anime, movies, and episodes in YouTube-style video feed.",
 };
 
-export const revalidate = 300;
+export const dynamic = "force-dynamic";
 
 interface HomePageProps {
   searchParams?: Promise<{ genre?: string; sort?: string; q?: string }>;
