@@ -143,9 +143,17 @@ export async function fetchCatalogSearch(
 export async function fetchCrCard(malId: number | string, full: boolean = true): Promise<CatalogCrCard | null> {
   if (!malId || String(malId) === "0") return null;
   const fullParam = full ? "?full=1" : "?full=0";
-  return catalogFetch<CatalogCrCard>(`/cr/card/${malId}${fullParam}`, {
+  const card = await catalogFetch<CatalogCrCard>(`/cr/card/${malId}${fullParam}`, {
     next: { revalidate: 3600 },
   });
+  if (!card) return null;
+  if (card.episodes?.length) card.episodes = dedupeEpisodesByNumber(card.episodes);
+  if (card.seasons?.length) {
+    card.seasons = card.seasons.map((season) =>
+      season.episodes?.length ? { ...season, episodes: dedupeEpisodesByNumber(season.episodes) } : season,
+    );
+  }
+  return card;
 }
 
 /**
@@ -161,8 +169,8 @@ export async function fetchCrSeasonEpisodes(
     { next: { revalidate: 1800 } }
   );
   if (!data) return [];
-  if (Array.isArray(data)) return data;
-  return data.items || data.episodes || [];
+  const list = Array.isArray(data) ? data : data.items || data.episodes || [];
+  return dedupeEpisodesByNumber(list);
 }
 
 // ---------------------------------------------------------------------------
