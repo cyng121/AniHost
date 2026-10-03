@@ -308,8 +308,15 @@ export async function loadTitle(slug: string): Promise<TitleResult> {
 
         // Enrich or replace with full catalog episode dataset if catalog has more episodes
         try {
-          const { fetchCatalogEpisodes } = await import("./catalog");
-          const catalogEps = await fetchCatalogEpisodes(targetEpisodeId);
+          const { fetchCrCard, fetchCatalogEpisodes } = await import("./catalog");
+
+          // /cr/card/{malId} is scoped to this exact title's own season, unlike
+          // /episodes/{malId} which can return every season of the franchise
+          // concatenated together (duplicate-looking episode numbers, or the
+          // wrong season's episode under the right number). Prefer the scoped
+          // source and only fall back to the broad one when it has nothing.
+          const card = await fetchCrCard(targetEpisodeId, true);
+          const catalogEps = card?.episodes?.length ? card.episodes : await fetchCatalogEpisodes(targetEpisodeId);
           if (catalogEps && catalogEps.length > 0) {
             if (!inline.length || catalogEps.length > inline.length) {
               inline = catalogEps.map((item, idx) => ({
