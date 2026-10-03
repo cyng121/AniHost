@@ -330,19 +330,25 @@ export async function fetchCatalogEpisodes(
       }
     }
 
-    // Deduplicate by episode number
-    const seen = new Set<number>();
-    const unique: CatalogEpisode[] = [];
-    for (const ep of allEpisodes) {
-      if (ep && typeof ep.ep === "number" && !seen.has(ep.ep)) {
-        seen.add(ep.ep);
-        unique.push(ep);
-      }
-    }
-    return unique.sort((a, b) => a.ep - b.ep);
+    return dedupeEpisodesByNumber(allEpisodes);
   }
 
-  return firstPageEpisodes;
+  // The catalog API can repeat an episode (e.g. overlapping season
+  // concatenation) even on a single page, so dedupe here too.
+  return dedupeEpisodesByNumber(firstPageEpisodes);
+}
+
+/** Keep the first occurrence of each episode number, sorted ascending. */
+function dedupeEpisodesByNumber(list: CatalogEpisode[]): CatalogEpisode[] {
+  const seen = new Set<number>();
+  const unique: CatalogEpisode[] = [];
+  for (const ep of list) {
+    if (ep && typeof ep.ep === "number" && !seen.has(ep.ep)) {
+      seen.add(ep.ep);
+      unique.push(ep);
+    }
+  }
+  return unique.sort((a, b) => a.ep - b.ep);
 }
 
 // ---------------------------------------------------------------------------
