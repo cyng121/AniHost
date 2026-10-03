@@ -310,13 +310,37 @@ export async function loadTitle(slug: string): Promise<TitleResult> {
         try {
           const { fetchCrCard, fetchCatalogEpisodes } = await import("./catalog");
 
-          // /cr/card/{malId} is scoped to this exact title's own season, unlike
-          // /episodes/{malId} which can return every season of the franchise
-          // concatenated together (duplicate-looking episode numbers, or the
-          // wrong season's episode under the right number). Prefer the scoped
-          // source and only fall back to the broad one when it has nothing.
+          // The catalog can group several Crunchyroll "seasons" under one
+          // shared MAL id (long-running franchises like this one aren't
+          // always re-split on MAL the way they are on Crunchyroll). Calling
+          // /episodes/{malId} with no cr_season_id then returns every CR
+          // season's episodes concatenated, each restarting its own
+          // numbering at 1 — looking like duplicates, or worse, silently
+          // substituting another season's episode under the right number.
+          //
+          // /cr/card/{malId}?full=1 hands back that season tree, so match
+          // this title's own season by its known episode count and use its
+          // scoped episode list (or scope the fallback call by its
+          // cr_season_id) instead of trusting the unscoped endpoint.
           const card = await fetchCrCard(targetEpisodeId, true);
-          const catalogEps = card?.episodes?.length ? card.episodes : await fetchCatalogEpisodes(targetEpisodeId);
+          const expectedCount = info.totalEpisodes;
+          const normalizedTitle = info.title?.trim().toLowerCase();
+          const matchedSeason =
+            card?.seasons?.length
+              ? (expectedCount && card.seasons.find((s) => s.episode_count === expectedCount)) ||
+                (normalizedTitle && card.seasons.find((s) => s.title?.trim().toLowerCase() === normalizedTitle)) ||
+                (card.seasons.length === 1 ? card.seasons[0] : undefined)
+              : undefined;
+
+          const catalogEps =
+            matchedSeason?.episodes?.length
+              ? matchedSeason.episodes
+              : card?.episodes?.length && (!card.seasons?.length || card.seasons.length === 1)
+              ? card.episodes
+              : await fetchCatalogEpisodes(
+                  targetEpisodeId,
+                  matchedSeason?.season_id ? { cr_season_id: matchedSeason.season_id } : {},
+                );
           if (catalogEps && catalogEps.length > 0) {
             if (!inline.length || catalogEps.length > inline.length) {
               inline = catalogEps.map((item, idx) => ({
