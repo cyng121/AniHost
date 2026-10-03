@@ -310,7 +310,7 @@ export async function fetchCatalogEpisodes(
   >(`/episodes/${malId}${query}`);
 
   if (!data) return [];
-  if (Array.isArray(data)) return data;
+  if (Array.isArray(data)) return dedupeEpisodesByNumber(data);
 
   const firstPageEpisodes = data.items || data.episodes || [];
 
