@@ -159,6 +159,12 @@ function parseStream(value: unknown, audio: "sub" | "dub", selectedServer: strin
   };
 }
 
+/** General-catalog providers, tried in this order once the requested one fails. */
+const GENERAL_PROVIDERS = ["zoro", "aniwave", "anidao", "watchanimeworld"] as const;
+
+/** Hindi/dub-only providers have no equivalent on another catalog to fall back to. */
+const isDubOnlyProvider = (prov: string) => prov === "hindi" || prov === "animesalt" || prov === "toons";
+
 async function fetchEpisode(options: Options): Promise<{ res: Result<unknown>; usedProvider: string }> {
   const { provider, anilistId, episodeNumber, relativeEpisodeNumber } = options;
   if (!anilistId) return { res: { ok: false, status: 400, error: "This episode has no provider id." }, usedProvider: provider };
@@ -172,26 +178,37 @@ async function fetchEpisode(options: Options): Promise<{ res: Result<unknown>; u
     return api.zoroAnilist(anilistId, ep);
   };
 
-  // 1. Try with requested provider and episodeNumber
-  let res = await callProvider(provider, episodeNumber);
+  // Try a provider at the cumulative episode number, then — if that's a
+  // different number — at the season-relative one. Some providers index a
+  // show's episodes per-season rather than cumulatively.
+  const tryProvider = async (prov: string) => {
+    let res = await callProvider(prov, episodeNumber);
+    if (!res.ok && relativeEpisodeNumber && relativeEpisodeNumber !== episodeNumber) {
+      res = await callProvider(prov, relativeEpisodeNumber);
+    }
+    return res;
+  };
 
-  // 2. If cumulative episode number (e.g. 59) returns 404 and relative episode number (e.g. 12) is different, try relative
-  if (!res.ok && relativeEpisodeNumber && relativeEpisodeNumber !== episodeNumber) {
-    res = await callProvider(provider, relativeEpisodeNumber);
-  }
-
+  // 1. Try the requested provider first.
+  const res = await tryProvider(provider);
   if (res.ok) {
     return { res, usedProvider: provider };
   }
 
-  // 3. Fallback: If requested provider failed, try primary provider ("zoro")
-  if (provider !== "zoro") {
-    let fallbackRes = await callProvider("zoro", episodeNumber);
-    if (!fallbackRes.ok && relativeEpisodeNumber && relativeEpisodeNumber !== episodeNumber) {
-      fallbackRes = await callProvider("zoro", relativeEpisodeNumber);
-    }
+  // Dub-only providers (Hindi) have no equivalent catalog to fall back to.
+  if (isDubOnlyProvider(provider)) {
+    return { res, usedProvider: provider };
+  }
+
+  // 2. A single provider's catalog can be missing just one episode's mapping
+  // even though every other episode of the show streams fine from it, so
+  // cascade through the remaining general providers rather than giving up
+  // after the one "zoro" fallback.
+  for (const prov of GENERAL_PROVIDERS) {
+    if (prov === provider) continue;
+    const fallbackRes = await tryProvider(prov);
     if (fallbackRes.ok) {
-      return { res: fallbackRes, usedProvider: "zoro" };
+      return { res: fallbackRes, usedProvider: prov };
     }
   }
 
