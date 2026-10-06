@@ -2,7 +2,7 @@
 # Copy this file to .dev.vars and fill in real values.
 # .dev.vars is gitignored — never commit the real file.
 
-ANIGHOST_API_BASE=https://api.animextrons.co.in
+ANIGHOST_API_BASE=https://api.anihosts.xyz
 ANIGHOST_API_ORIGIN=https://animextrons.co.in
 ANIGHOST_SITE_ORIGIN=http://localhost:3000
 ANIGHOST_CACHE_SECONDS=300
