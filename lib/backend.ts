@@ -19,7 +19,7 @@ function getBaseUrl(): string {
   if (envBase && !envBase.includes("vercel.app") && !envBase.includes("localhost")) {
     return envBase.replace(/\/+$/, "");
   }
-  return "https://senpaiflix-backend-h8ed.onrender.com";
+  return "https://api.anihosts.xyz";
 }
 
 const BASE = getBaseUrl();
