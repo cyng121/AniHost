@@ -10,7 +10,7 @@ function getBaseUrl(): string {
   ) {
     return envBase.replace(/\/+$/, "");
   }
-  return "https://senpaiflix-backend-h8ed.onrender.com";
+  return "https://api.anihosts.xyz";
 }
 
 const API = getBaseUrl();
